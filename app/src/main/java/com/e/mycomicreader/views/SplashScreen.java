@@ -24,11 +24,6 @@ public class SplashScreen extends AppCompatActivity {
         imgSplashScreen.setAnimation(animSplashScreen);
 
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                finish();
-            }
-        }, 5000);
+        handler.postDelayed(() -> finish(), 5000);
     }
 }

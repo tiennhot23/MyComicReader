@@ -15,6 +15,8 @@ public class MainActivity extends AppCompatActivity {
 
         startSplashScreen();
 
+
+
     }
 
     private void startSplashScreen() {
