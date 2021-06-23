@@ -47,4 +47,9 @@ dependencies {
     implementation 'com.ss.bannerslider:bannerslider:2.0.0'
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
     implementation 'com.wajahatkarim3.easyflipviewpager:easyflipviewpager:1.0.0'
+    implementation 'com.etebarian:meow-bottom-navigation:1.3.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.61"
+    implementation "androidx.cardview:cardview:1.0.0"
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
+    implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
 }
