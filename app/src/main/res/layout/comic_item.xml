@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="210dp"
-    android:layout_height="210dp"
+    android:layout_width="130dp"
+    android:layout_height="170dp"
     android:layout_margin="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
@@ -30,12 +30,13 @@
                 <LinearLayout
                     android:id="@+id/linear"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
+                    android:layout_height="130dp"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/thumb"
-                        android:background="@drawable/xinh"
+                        android:scaleType="fitXY"
+                        android:background="@color/card_view_color"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
@@ -61,13 +62,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:id="@+id/tile_comic"
+                        android:id="@+id/title_comic"
                         android:layout_marginLeft="8dp"
                         android:layout_weight="1"
                         android:textColor="@color/white"
                         android:text="Title comic"
                         android:ellipsize="end"
-                        android:textSize="20sp"
+                        android:textSize="10sp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -82,19 +83,12 @@
                             android:layout_weight="1"
                             android:textColor="@color/white"
                             android:text="Chapter"
-                            android:textSize="15sp"
+                            android:textSize="8sp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
                         </TextView>
-                        <ImageButton
-                            android:id="@+id/btn_follow"
-                            android:layout_marginRight="8dp"
-                            android:background="@drawable/ic_mark"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
 
-                        </ImageButton>
 
                     </LinearLayout>
 
@@ -109,12 +103,12 @@
     </LinearLayout>
 
     <LinearLayout
-        android:weightSum="5"
+        android:weightSum="8"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
-            android:layout_weight="4"
+            android:layout_weight="6"
             android:layout_width="0dp"
             android:layout_height="match_parent">
             <TextView
@@ -124,31 +118,38 @@
             </TextView>
 
         </LinearLayout>
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
-            <androidx.cardview.widget.CardView
-                android:layout_gravity="top"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                app:cardCornerRadius="50dp"
-                app:cardBackgroundColor="@color/yellow">
-                <TextView
-                    android:id="@+id/rating"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="9.1"
-                    android:textSize="20sp">
+            android:layout_weight="2">
+            <ImageView
+                android:src="@drawable/ic_star"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                </TextView>
-            </androidx.cardview.widget.CardView>
+            </ImageView>
+            <TextView
+                android:id="@+id/rating"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="9.1"
+                android:textSize="10sp">
+
+            </TextView>
+
+            <ImageButton
+                android:id="@+id/btn_follow"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/ic_mark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </ImageButton>
 
 
-
-
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 

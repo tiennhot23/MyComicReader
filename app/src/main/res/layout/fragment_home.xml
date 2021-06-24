@@ -12,7 +12,7 @@
         android:foregroundGravity="center"
         android:id="@+id/banner_slider"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="120dp">
 
     </ss.com.bannerslider.Slider>
 
