@@ -1,13 +1,14 @@
 package com.e.mycomicreader.adapters;
 
+import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+import com.e.mycomicreader.views.MainActivity;
+import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
@@ -18,8 +19,11 @@ public class MainViewPagerAdapter extends FragmentStateAdapter {
     private ArrayList<Fragment> arrayFragment = new ArrayList<>();
     private ArrayList<String> arrayTitle = new ArrayList<>();
 
-    public MainViewPagerAdapter(@NonNull @NotNull FragmentActivity fragmentActivity) {
+    MeowBottomNavigation bottomNavigation;
+
+    public MainViewPagerAdapter(@NonNull @NotNull FragmentActivity fragmentActivity, MeowBottomNavigation bn) {
         super(fragmentActivity);
+        this.bottomNavigation = bn;
     }
 
     public MainViewPagerAdapter(@NonNull @NotNull Fragment fragment) {
@@ -30,13 +34,11 @@ public class MainViewPagerAdapter extends FragmentStateAdapter {
         super(fragmentManager, lifecycle);
     }
 
-
     public void addFragment(Fragment fragment, String title){
         arrayFragment.add(fragment);
         arrayTitle.add(title);
     }
 
-    @NonNull
     @NotNull
     @Override
     public Fragment createFragment(int position) {

@@ -90,7 +90,7 @@
                         <ImageButton
                             android:id="@+id/btn_follow"
                             android:layout_marginRight="8dp"
-                            android:background="@drawable/ic_follow"
+                            android:background="@drawable/ic_mark"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 

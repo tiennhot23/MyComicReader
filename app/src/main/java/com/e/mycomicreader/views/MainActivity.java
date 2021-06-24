@@ -1,13 +1,12 @@
 package com.e.mycomicreader.views;
 
+import android.animation.LayoutTransition;
 import android.content.Intent;
+import android.view.DragEvent;
 import android.view.View;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 import androidx.fragment.app.*;
-import androidx.lifecycle.Lifecycle;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.adapters.MainViewPagerAdapter;
@@ -15,13 +14,14 @@ import com.e.mycomicreader.fragments.FollowedFragment;
 import com.e.mycomicreader.fragments.HomeFragment;
 import com.e.mycomicreader.fragments.LibraryFragment;
 import com.e.mycomicreader.fragments.SearchFragment;
-import org.jetbrains.annotations.NotNull;
+import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 
 public class MainActivity extends FragmentActivity  {
     private static final int NUM_PAGES = 4;
 
     private ViewPager2 viewPager;
     private MainViewPagerAdapter mainViewPagerAdapter;
+    private MeowBottomNavigation bottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,15 +30,76 @@ public class MainActivity extends FragmentActivity  {
 
 //        startSplashScreen();
 
+        bottomNavigation = this.findViewById(R.id.bottom_navigation);bottomNavigation.show(1, true);
+        bottomNavigation.add(new MeowBottomNavigation.Model(1, R.drawable.ic_home));
+        bottomNavigation.add(new MeowBottomNavigation.Model(2, R.drawable.ic_search));
+        bottomNavigation.add(new MeowBottomNavigation.Model(3, R.drawable.ic_library));
+        bottomNavigation.add(new MeowBottomNavigation.Model(4, R.drawable.ic_followed));
+
         viewPager = this.findViewById(R.id.view_pager);
-        mainViewPagerAdapter = new MainViewPagerAdapter(this);
+        mainViewPagerAdapter = new MainViewPagerAdapter(this, bottomNavigation);
         mainViewPagerAdapter.addFragment(new HomeFragment(), "Home");
         mainViewPagerAdapter.addFragment(new SearchFragment(), "Search");
         mainViewPagerAdapter.addFragment(new LibraryFragment(), "Library");
         mainViewPagerAdapter.addFragment(new FollowedFragment(), "Followed");
         viewPager.setAdapter(mainViewPagerAdapter);
         viewPager.setPageTransformer(new ZoomOutPageTransformer());
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+            }
 
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                bottomNavigation.show(position + 1, true);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+            }
+        });
+
+
+
+
+        bottomNavigation.setOnClickMenuListener(new MeowBottomNavigation.ClickListener() {
+            @Override
+            public void onClickItem(MeowBottomNavigation.Model item) {
+
+            }
+        });
+        bottomNavigation.setOnShowListener(new MeowBottomNavigation.ShowListener() {
+            @Override
+            public void onShowItem(MeowBottomNavigation.Model item) {
+                switch (item.getId()){
+                    case 1:{
+                        viewPager.setCurrentItem(0);
+                        break;
+                    }
+                    case 2:{
+                        viewPager.setCurrentItem(1);
+                        break;
+                    }
+                    case 3:{
+                        viewPager.setCurrentItem(2);
+                        break;
+                    }
+                    case 4:{
+                        viewPager.setCurrentItem(3);
+                        break;
+                    }
+                }
+            }
+        });
+        bottomNavigation.setOnReselectListener(new MeowBottomNavigation.ReselectListener() {
+            @Override
+            public void onReselectItem(MeowBottomNavigation.Model item) {
+
+            }
+        });
 
     }
 
@@ -48,6 +109,7 @@ public class MainActivity extends FragmentActivity  {
         private static final float MIN_ALPHA = 0.5f;
 
         public void transformPage(View view, float position) {
+
             int pageWidth = view.getWidth();
             int pageHeight = view.getHeight();
 
