@@ -1,168 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    tools:context=".views.MainActivity">
+    tools:context=".views.MainActivity"
+    android:orientation="vertical">
 
-    <ss.com.bannerslider.Slider
-        android:foregroundGravity="center"
-        android:id="@+id/banner_slider"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="0dp">
 
-    </ss.com.bannerslider.Slider>
-
-    <LinearLayout
-        android:id="@+id/linearlayout"
-        android:layout_below="@id/banner_slider"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="2">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-            <LinearLayout
-                android:id="@+id/linear1"
-                android:weightSum="5"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/txt_last_updated"
-                    android:text="MỚI CẬP NHẬT"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:textColor="@color/text_color"
-                    android:layout_weight="2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content">
-
-                </TextView>
-
-                <LinearLayout
-                    android:weightSum="3"
-                    android:layout_weight="3"
-                    android:layout_width="0dp"
-                    android:orientation="vertical"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:id="@+id/txt_more_last_updated"
-                        android:text="Xem thêm >>"
-                        android:gravity="right"
-                        android:layout_gravity="center"
-                        android:textStyle="bold"
-                        android:textSize="10sp"
-                        android:textColor="@color/text_color"
-                        android:layout_weight="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                    </TextView>
-
-                    <View
-                        android:background="@drawable/gradient_dark_pink"
-                        android:layout_gravity="top"
-                        android:layout_weight="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp">
-
-                    </View>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_last_updated"
-                android:orientation="horizontal"
-                android:layout_below="@id/linear1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-            <LinearLayout
-                android:id="@+id/linear2"
-                android:weightSum="5"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/txt_recommend"
-                    android:text="ĐỀ XUẤT"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:textColor="@color/text_color"
-                    android:layout_weight="2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content">
-
-                </TextView>
-
-                <LinearLayout
-                    android:weightSum="3"
-                    android:layout_weight="3"
-                    android:layout_width="0dp"
-                    android:orientation="vertical"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:id="@+id/txt_more_recommend"
-                        android:text="Xem thêm >>"
-                        android:gravity="right"
-                        android:layout_gravity="center"
-                        android:textStyle="bold"
-                        android:textSize="10sp"
-                        android:textColor="@color/text_color"
-                        android:layout_weight="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                    </TextView>
-
-                    <View
-                        android:background="@drawable/gradient_dark_pink"
-                        android:layout_gravity="top"
-                        android:layout_weight="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp">
-
-                    </View>
-
-                </LinearLayout>
-
-            </LinearLayout>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_recommend"
-                android:orientation="horizontal"
-                android:layout_below="@id/linear2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-        </RelativeLayout>
-
-    </LinearLayout>
+    </androidx.viewpager2.widget.ViewPager2>
 
     <meow.bottomnavigation.MeowBottomNavigation
-        android:layout_below="@id/linearlayout"
+        android:layout_gravity="bottom"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:mbn_circleColor="#ffffff"
+        app:mbn_backgroundBottomColor="#000000"
+        app:mbn_defaultIconColor="#90a4ae"
+        app:mbn_rippleColor="#2f424242"
+        app:mbn_selectedIconColor="#3c415e"
+        app:mbn_shadowColor="#1f212121"/>
 
-</RelativeLayout>
+</LinearLayout>
