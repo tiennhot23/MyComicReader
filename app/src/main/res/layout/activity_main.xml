@@ -22,11 +22,11 @@
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:mbn_circleColor="@color/text_color"
-        app:mbn_backgroundBottomColor="#000000"
-        app:mbn_defaultIconColor="#90a4ae"
-        app:mbn_rippleColor="#ffffff"
-        app:mbn_selectedIconColor="#ffffff"
-        app:mbn_shadowColor="#1f212121"/>
+        app:mbn_circleColor="@color/card_view_color"
+        app:mbn_backgroundBottomColor="@color/card_view_color"
+        app:mbn_defaultIconColor="@color/text_color"
+        app:mbn_rippleColor="@color/text_color"
+        app:mbn_selectedIconColor="@color/text_color"
+        app:mbn_shadowColor="@color/text_color"/>
 
 </LinearLayout>
