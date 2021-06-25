@@ -1,32 +1,20 @@
 package com.e.mycomicreader.views;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 import com.e.mycomicreader.R;
-import com.e.mycomicreader.Retrofit.IComicAPI;
-import com.e.mycomicreader.adapters.ComicAdapter;
 import com.e.mycomicreader.adapters.MainViewPagerAdapter;
 import com.e.mycomicreader.fragments.FollowedFragment;
 import com.e.mycomicreader.fragments.HomeFragment;
 import com.e.mycomicreader.fragments.LibraryFragment;
 import com.e.mycomicreader.fragments.SearchFragment;
-import com.e.mycomicreader.models.Comic;
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
-import dmax.dialog.SpotsDialog;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-
-import java.util.List;
 
 public class MainActivity extends FragmentActivity  {
     private ViewPager2 viewPager;
@@ -62,7 +50,7 @@ public class MainActivity extends FragmentActivity  {
         bottomNavigation.add(new MeowBottomNavigation.Model(1, R.drawable.ic_home));
         bottomNavigation.add(new MeowBottomNavigation.Model(2, R.drawable.ic_search));
         bottomNavigation.add(new MeowBottomNavigation.Model(3, R.drawable.ic_library));
-        bottomNavigation.add(new MeowBottomNavigation.Model(4, R.drawable.ic_followed));
+        bottomNavigation.add(new MeowBottomNavigation.Model(4, R.drawable.ic_marked));
 
         viewPager = this.findViewById(R.id.view_pager);
         mainViewPagerAdapter = new MainViewPagerAdapter(this, bottomNavigation);
