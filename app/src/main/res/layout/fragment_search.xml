@@ -79,9 +79,12 @@
             android:layout_weight="3"
             android:layout_margin="5dp"
             app:cardCornerRadius="10dp"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent">
             <Spinner
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:background="@drawable/gradient_dark_pink"
                 android:id="@+id/spn_genre"
                 android:layout_width="match_parent"
@@ -93,7 +96,7 @@
             android:layout_weight="3"
             android:layout_margin="5dp"
             app:cardCornerRadius="10dp"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent">
             <Spinner
                 android:background="@drawable/gradient_dark_pink"
