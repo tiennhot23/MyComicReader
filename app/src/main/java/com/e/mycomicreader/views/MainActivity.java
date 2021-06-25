@@ -1,26 +1,45 @@
 package com.e.mycomicreader.views;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.widget.ViewPager2;
+import com.e.mycomicreader.Common.Common;
 import com.e.mycomicreader.R;
+import com.e.mycomicreader.Retrofit.IComicAPI;
 import com.e.mycomicreader.adapters.MainViewPagerAdapter;
 import com.e.mycomicreader.fragments.FollowedFragment;
 import com.e.mycomicreader.fragments.HomeFragment;
 import com.e.mycomicreader.fragments.LibraryFragment;
 import com.e.mycomicreader.fragments.SearchFragment;
+import com.e.mycomicreader.models.Comic;
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends FragmentActivity  {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends FragmentActivity {
+    private CompositeDisposable compositeDisposable;
     private ViewPager2 viewPager;
     private MainViewPagerAdapter mainViewPagerAdapter;
     private MeowBottomNavigation bottomNavigation;
 
+    public static boolean isNetworkAvailable;
+    public static List<Comic> comics = new ArrayList<>();
+
+    IComicAPI iComicAPI;
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -36,15 +55,37 @@ public class MainActivity extends FragmentActivity  {
 //        startSplashScreen();
         UI();
 
+        compositeDisposable = new CompositeDisposable();
+        iComicAPI = Common.getAPI();
+        isNetworkAvailable = isNetworkAvailable();
 
+        BackGroundTask bg = new BackGroundTask();
+        bg.execute();
 
 
     }
 
+    public class BackGroundTask extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            fetchComic();
+            return null;
+        }
+    }
 
+    private void fetchComic() {
+        compositeDisposable.add(iComicAPI.getComics()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<Comic>>() {
+                    @Override
+                    public void accept(List<Comic> comic) throws Exception {
+                        comics.addAll(comic);
+                    }
+                }));
+    }
 
-
-    public void UI(){
+    public void UI() {
         bottomNavigation = this.findViewById(R.id.bottom_navigation);
         bottomNavigation.show(1, true);
         bottomNavigation.add(new MeowBottomNavigation.Model(1, R.drawable.ic_home));
@@ -79,8 +120,6 @@ public class MainActivity extends FragmentActivity  {
         });
 
 
-
-
         bottomNavigation.setOnClickMenuListener(new MeowBottomNavigation.ClickListener() {
             @Override
             public void onClickItem(MeowBottomNavigation.Model item) {
@@ -90,20 +129,20 @@ public class MainActivity extends FragmentActivity  {
         bottomNavigation.setOnShowListener(new MeowBottomNavigation.ShowListener() {
             @Override
             public void onShowItem(MeowBottomNavigation.Model item) {
-                switch (item.getId()){
-                    case 1:{
+                switch (item.getId()) {
+                    case 1: {
                         viewPager.setCurrentItem(0);
                         break;
                     }
-                    case 2:{
+                    case 2: {
                         viewPager.setCurrentItem(1);
                         break;
                     }
-                    case 3:{
+                    case 3: {
                         viewPager.setCurrentItem(2);
                         break;
                     }
-                    case 4:{
+                    case 4: {
                         viewPager.setCurrentItem(3);
                         break;
                     }
@@ -117,7 +156,6 @@ public class MainActivity extends FragmentActivity  {
             }
         });
     }
-
 
     public class ZoomOutPageTransformer implements ViewPager2.PageTransformer {
         private static final float MIN_SCALE = 0.85f;
@@ -162,5 +200,14 @@ public class MainActivity extends FragmentActivity  {
     private void startSplashScreen() {
         Intent intent = new Intent(this, SplashScreen.class);
         startActivity(intent);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
     }
 }

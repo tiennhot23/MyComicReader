@@ -13,6 +13,7 @@ import com.e.mycomicreader.R;
 import com.e.mycomicreader.Retrofit.IComicAPI;
 import com.e.mycomicreader.adapters.ComicAdapter;
 import com.e.mycomicreader.models.Comic;
+import com.e.mycomicreader.views.MainActivity;
 import dmax.dialog.SpotsDialog;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -21,12 +22,13 @@ import io.reactivex.schedulers.Schedulers;
 
 import java.util.List;
 
-public class HomeFragment  extends Fragment {
+public class HomeFragment extends Fragment {
     private CompositeDisposable compositeDisposable;
 
     View view;
     IComicAPI iComicAPI;
     RecyclerView recyclerLastUpdated, recyclerRecommend;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -46,7 +48,9 @@ public class HomeFragment  extends Fragment {
         recyclerRecommend.setLayoutManager(linearLayoutManager1);
 //        recyclerRecommend.setHasFixedSize(true);
 
-        fetchLastUpdated();
+        if (MainActivity.isNetworkAvailable) {
+            fetchLastUpdated();
+        }
 
         return view;
     }

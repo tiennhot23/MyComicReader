@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.e.mycomicreader.Common.Common;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.Retrofit.IComicAPI;
-import com.e.mycomicreader.adapters.ComicAdapter;
 import com.e.mycomicreader.adapters.ComicAdapter3;
 import com.e.mycomicreader.models.Comic;
 import com.e.mycomicreader.models.Genre;
+import com.e.mycomicreader.views.MainActivity;
 import dmax.dialog.SpotsDialog;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -51,9 +51,20 @@ public class SearchFragment  extends Fragment {
         btn_search = this.view.findViewById(R.id.btn_search);
 
 
-        fetchSearchComics("");
-        fetchGenres();
-        fetchStatus();
+        if(MainActivity.isNetworkAvailable){
+            fetchSearchComics("");
+            fetchGenres();
+            fetchStatus();
+        }
+
+        btn_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MainActivity.isNetworkAvailable){
+                    fetchSearchComics(editText.getText().toString());
+                }
+            }
+        });
 
         return view;
     }
@@ -107,7 +118,7 @@ public class SearchFragment  extends Fragment {
                     .subscribe(new Consumer<List<Comic>>() {
                         @Override
                         public void accept(List<Comic> comics) throws Exception {
-                            recycler.setAdapter(new ComicAdapter(view.getContext(), comics));
+                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics));
                             dialog.dismiss();
                         }
                     }));
