@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListPopupWindow;
 import android.widget.Spinner;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,6 +21,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class SearchFragment  extends Fragment {
@@ -28,7 +30,7 @@ public class SearchFragment  extends Fragment {
     View view;
     IComicAPI iComicAPI;
     RecyclerView recycler;
-    Spinner spn_genre;
+    Spinner spn_genre, spn_status;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,8 +43,11 @@ public class SearchFragment  extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(this.view.getContext()));
 
         spn_genre = this.view.findViewById(R.id.spn_genre);
+        spn_status = this.view.findViewById(R.id.spn_status);
 
         fetchGenres();
+
+        fetchStatus();
 
         return view;
     }
@@ -63,8 +68,20 @@ public class SearchFragment  extends Fragment {
                         ArrayAdapter genreArrayAdapter = new ArrayAdapter(view.getContext(), R.layout.spinner_item, genre_names);
                         genreArrayAdapter.setDropDownViewResource(R.layout.dropdown_spinner_item);
                         spn_genre.setAdapter(genreArrayAdapter);
+                        Field popup = Spinner.class.getDeclaredField("mPopup");
+                        popup.setAccessible(true);
+                        ListPopupWindow popupWindow = (ListPopupWindow) popup.get(spn_genre);
+                        popupWindow.setHeight(500);
+
                         dialog.dismiss();
                     }
                 }));
+    }
+
+    private void fetchStatus(){
+        String[] status = new String[]{"Tất cả", "Đang tiến hành", "Hoàn thành"};
+        ArrayAdapter statusArrayAdapter = new ArrayAdapter(view.getContext(), R.layout.spinner_item, status);
+        statusArrayAdapter.setDropDownViewResource(R.layout.dropdown_spinner_item);
+        spn_status.setAdapter(statusArrayAdapter);
     }
 }

@@ -117,11 +117,27 @@
         </ImageView>
     </LinearLayout>
 
+    <androidx.cardview.widget.CardView
+        android:layout_marginHorizontal="50dp"
+        android:layout_below="@id/linear"
+        android:id="@+id/line"
+        app:cardCornerRadius="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@drawable/gradient_dark_pink">
+
+        </View>
+
+    </androidx.cardview.widget.CardView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/linear"
+        android:layout_below="@id/line"
         android:id="@+id/recycler">
 
     </androidx.recyclerview.widget.RecyclerView>
