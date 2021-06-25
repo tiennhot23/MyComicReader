@@ -18,4 +18,7 @@ public interface IComicAPI {
 
     @GET("genres")
     Observable<List<Genre>> getGenres();
+
+    @GET("search/{query}")
+    Observable<List<Comic>> getSearchComic(@Path("query")String query);
 }

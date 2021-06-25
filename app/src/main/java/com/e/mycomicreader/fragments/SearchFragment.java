@@ -5,15 +5,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListPopupWindow;
-import android.widget.Spinner;
+import android.widget.*;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.e.mycomicreader.Common.Common;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.Retrofit.IComicAPI;
+import com.e.mycomicreader.adapters.ComicAdapter;
+import com.e.mycomicreader.adapters.ComicAdapter3;
+import com.e.mycomicreader.models.Comic;
 import com.e.mycomicreader.models.Genre;
 import dmax.dialog.SpotsDialog;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -30,7 +31,9 @@ public class SearchFragment  extends Fragment {
     View view;
     IComicAPI iComicAPI;
     RecyclerView recycler;
+    EditText editText;
     Spinner spn_genre, spn_status;
+    ImageView btn_search;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -44,9 +47,12 @@ public class SearchFragment  extends Fragment {
 
         spn_genre = this.view.findViewById(R.id.spn_genre);
         spn_status = this.view.findViewById(R.id.spn_status);
+        editText = this.view.findViewById(R.id.edit_text);
+        btn_search = this.view.findViewById(R.id.btn_search);
 
+
+        fetchSearchComics("");
         fetchGenres();
-
         fetchStatus();
 
         return view;
@@ -76,6 +82,37 @@ public class SearchFragment  extends Fragment {
                         dialog.dismiss();
                     }
                 }));
+    }
+
+    private void fetchSearchComics(String query) {
+        if(query.equals("")){
+            AlertDialog dialog = new SpotsDialog.Builder().setContext(this.view.getContext()).setMessage("Loading...").build();
+            dialog.show();
+            compositeDisposable.add(iComicAPI.getComics()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<List<Comic>>() {
+                        @Override
+                        public void accept(List<Comic> comics) throws Exception {
+                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics));
+                            dialog.dismiss();
+                        }
+                    }));
+        }else{
+            AlertDialog dialog = new SpotsDialog.Builder().setContext(this.view.getContext()).setMessage("Loading...").build();
+            dialog.show();
+            compositeDisposable.add(iComicAPI.getSearchComic(query)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<List<Comic>>() {
+                        @Override
+                        public void accept(List<Comic> comics) throws Exception {
+                            recycler.setAdapter(new ComicAdapter(view.getContext(), comics));
+                            dialog.dismiss();
+                        }
+                    }));
+        }
+
     }
 
     private void fetchStatus(){
