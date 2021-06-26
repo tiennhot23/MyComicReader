@@ -3,16 +3,16 @@ package com.e.mycomicreader.models;
 import java.util.List;
 
 public class Chapter {
-    public String chapter_name;
+    public String chapter_title;
     public String chapter_endpoint;
-    public List<String> image_link;
+    public List<String> chapter_image;
 
     public Chapter() {
     }
 
-    public Chapter(String chapter_name, String chapter_endpoint, List<String> image_link) {
-        this.chapter_name = chapter_name;
+    public Chapter(String chapter_title, String chapter_endpoint, List<String> chapter_image) {
+        this.chapter_title = chapter_title;
         this.chapter_endpoint = chapter_endpoint;
-        this.image_link = image_link;
+        this.chapter_image = chapter_image;
     }
 }

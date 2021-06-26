@@ -63,6 +63,13 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>{
 
                 }
             } );
+
+            btn_follow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         }
     }
 }
