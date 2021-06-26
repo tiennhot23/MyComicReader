@@ -23,7 +23,10 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SearchFragment  extends Fragment {
     private CompositeDisposable compositeDisposable;
@@ -33,7 +36,11 @@ public class SearchFragment  extends Fragment {
     RecyclerView recycler;
     EditText editText;
     Spinner spn_genre, spn_status;
-    ImageView btn_search;
+    ImageView btn_search, btn_filter;
+
+    Map<String, String> genre_list = new HashMap<>();
+
+    List<Comic> list_search_comic = new ArrayList<>();
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -49,6 +56,7 @@ public class SearchFragment  extends Fragment {
         spn_status = this.view.findViewById(R.id.spn_status);
         editText = this.view.findViewById(R.id.edit_text);
         btn_search = this.view.findViewById(R.id.btn_search);
+        btn_filter = this.view.findViewById(R.id.btn_filter);
 
 
         if(MainActivity.isNetworkAvailable){
@@ -62,6 +70,17 @@ public class SearchFragment  extends Fragment {
             public void onClick(View v) {
                 if(MainActivity.isNetworkAvailable){
                     fetchSearchComics(editText.getText().toString());
+                    spn_genre.setSelection(0);
+                    spn_status.setSelection(0);
+                }
+            }
+        });
+
+        btn_filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MainActivity.isNetworkAvailable){
+                    filter(editText.getText().toString(), spn_genre.getSelectedItem().toString());
                 }
             }
         });
@@ -80,7 +99,9 @@ public class SearchFragment  extends Fragment {
                     public void accept(List<Genre> genres) throws Exception {
                         String[] genre_names = new String[genres.size()];
                         for (int i=0; i<genres.size(); i++) {
-                            genre_names[i] = genres.get(i).title;
+                            genre_names[i] = genres.get(i).genre_name;
+
+                            genre_list.put(genres.get(i).genre_name, genres.get(i).genre_endpoint);
                         }
                         ArrayAdapter genreArrayAdapter = new ArrayAdapter(view.getContext(), R.layout.spinner_item, genre_names);
                         genreArrayAdapter.setDropDownViewResource(R.layout.dropdown_spinner_item);
@@ -124,6 +145,52 @@ public class SearchFragment  extends Fragment {
                     }));
         }
 
+    }
+
+    private void filter(String query, String genre){
+        if(!query.equals("") && !genre.equals("Tất cả")){
+            AlertDialog dialog = new SpotsDialog.Builder().setContext(this.view.getContext()).setMessage("Loading...").build();
+            dialog.show();
+            compositeDisposable.add(iComicAPI.filterComics(genre_list.get(genre), query)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<List<Comic>>() {
+                        @Override
+                        public void accept(List<Comic> comics) throws Exception {
+                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics));
+                            dialog.dismiss();
+                        }
+                    }));
+        }else if (query.equals("") && genre.equals("Tất cả")){
+            recycler.setAdapter(new ComicAdapter3(view.getContext(), MainActivity.comics));
+        }
+        else if(query.equals("")){
+            AlertDialog dialog = new SpotsDialog.Builder().setContext(this.view.getContext()).setMessage("Loading...").build();
+            dialog.show();
+            compositeDisposable.add(iComicAPI.filterComics(genre_list.get(genre))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<List<Comic>>() {
+                        @Override
+                        public void accept(List<Comic> comics) throws Exception {
+                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics));
+                            dialog.dismiss();
+                        }
+                    }));
+        }else {
+            AlertDialog dialog = new SpotsDialog.Builder().setContext(this.view.getContext()).setMessage("Loading...").build();
+            dialog.show();
+            compositeDisposable.add(iComicAPI.getSearchComic(query)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<List<Comic>>() {
+                        @Override
+                        public void accept(List<Comic> comics) throws Exception {
+                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics));
+                            dialog.dismiss();
+                        }
+                    }));
+        }
     }
 
     private void fetchStatus(){

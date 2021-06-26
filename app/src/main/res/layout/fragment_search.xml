@@ -30,6 +30,7 @@
             </ImageView>
 
             <EditText
+                android:maxLines="1"
                 android:layout_toStartOf="@id/btn_search"
                 android:layout_marginHorizontal="10dp"
                 android:id="@+id/edit_text"
