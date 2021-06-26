@@ -19,7 +19,6 @@ import java.util.List;
 public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>{
     Context context;
     List<Comic> comics = new ArrayList<>();
-
     public ComicAdapter() {
     }
 
@@ -67,7 +66,6 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>{
             btn_follow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                 }
             });
         }

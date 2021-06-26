@@ -11,16 +11,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 import com.e.mycomicreader.Common.Common;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.Retrofit.IComicAPI;
 import com.e.mycomicreader.adapters.MainViewPagerAdapter;
+import com.e.mycomicreader.entity.FollowedComic;
+import com.e.mycomicreader.entity.MarkedChapter;
 import com.e.mycomicreader.fragments.FollowedFragment;
 import com.e.mycomicreader.fragments.HomeFragment;
 import com.e.mycomicreader.fragments.LibraryFragment;
 import com.e.mycomicreader.fragments.SearchFragment;
 import com.e.mycomicreader.models.Comic;
+import com.e.mycomicreader.models.FollowedComicViewModel;
+import com.e.mycomicreader.models.MarkedChapterViewModel;
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -30,7 +36,7 @@ import io.reactivex.schedulers.Schedulers;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity{
     private CompositeDisposable compositeDisposable;
     private ViewPager2 viewPager;
     private MainViewPagerAdapter mainViewPagerAdapter;
@@ -38,6 +44,8 @@ public class MainActivity extends FragmentActivity {
 
     public static boolean isNetworkAvailable;
     public static List<Comic> comics = new ArrayList<>();
+    public static FollowedComicViewModel followedComicViewModel;
+    public static MarkedChapterViewModel markedChapterViewModel;
 
     IComicAPI iComicAPI;
 
@@ -54,6 +62,24 @@ public class MainActivity extends FragmentActivity {
 
 //        startSplashScreen();
         UI();
+
+        followedComicViewModel = new ViewModelProvider(this).get(FollowedComicViewModel.class);
+        markedChapterViewModel = new ViewModelProvider(this).get(MarkedChapterViewModel.class);
+
+        followedComicViewModel.getAll().observe(this, new Observer<List<FollowedComic>>() {
+            @Override
+            public void onChanged(List<FollowedComic> followedComics) {
+
+            }
+        });
+
+        markedChapterViewModel.getAll().observe(this, new Observer<List<MarkedChapter>>() {
+            @Override
+            public void onChanged(List<MarkedChapter> markedChapters) {
+
+            }
+        });
+
 
         compositeDisposable = new CompositeDisposable();
         iComicAPI = Common.getAPI();
