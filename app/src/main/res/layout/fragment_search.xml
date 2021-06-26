@@ -7,10 +7,10 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardview"
-        app:cardBackgroundColor="@color/card_view_color"
+        app:cardBackgroundColor="@color/black"
         android:layout_marginHorizontal="30dp"
         android:layout_marginVertical="10dp"
-        app:cardCornerRadius="30dp"
+        app:cardCornerRadius="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -35,7 +35,7 @@
                 android:layout_marginHorizontal="10dp"
                 android:id="@+id/edit_text"
                 android:textColor="@color/white"
-                android:shadowColor="@color/text_color"
+                android:shadowColor="@color/gray"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/cardview"
         android:text="Lịch sử tìm kiếm"
-        android:textColor="@color/text_color"
+        android:textColor="@color/black"
         android:layout_marginHorizontal="10dp">
 
     </TextView>
@@ -86,7 +86,7 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:background="@drawable/gradient_dark_pink"
+                android:background="@color/black"
                 android:id="@+id/spn_genre"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -100,7 +100,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent">
             <Spinner
-                android:background="@drawable/gradient_dark_pink"
+                android:background="@color/black"
                 android:id="@+id/spn_status"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -128,7 +128,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="4dp"
-            android:background="@drawable/gradient_dark_pink">
+            android:background="@drawable/gradient_black_white">
 
         </View>
 

@@ -5,11 +5,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginVertical="5dp"
     app:cardCornerRadius="20dp"
-    app:cardBackgroundColor="@color/card_view_color">
+    app:cardBackgroundColor="@color/black">
 
     <ImageView
         android:id="@+id/background"
-        android:alpha="0.5"
+        android:alpha="0.3"
         android:scaleType="centerCrop"
         android:src="@drawable/xinh"
         android:layout_width="match_parent"
