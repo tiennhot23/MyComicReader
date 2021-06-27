@@ -4,12 +4,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 import com.e.mycomicreader.R;
+import com.e.mycomicreader.entity.FollowedComic;
 import com.e.mycomicreader.models.Comic;
+import com.e.mycomicreader.views.MainActivity;
 import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +39,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
         Picasso.get().load(comics.get(position).thumb).into(holder.thumb);
+        holder.btn_follow.setTag(position);
     }
 
     @Override
@@ -47,7 +50,8 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>{
     public class ViewHolder extends RecyclerView.ViewHolder{
         ImageView thumb;
         TextView title_comic, title_chapter, rating;
-        ImageButton btn_follow;
+        ImageView btn_follow;
+        Toast toast = null;
         public ViewHolder(@NotNull View itemView) {
             super(itemView);
             thumb = itemView.findViewById(R.id.thumb);
@@ -66,6 +70,18 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>{
             btn_follow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(toast != null) toast.cancel();
+                    if(btn_follow.getDrawable().getConstantState().equals(context.getResources().getDrawable(R.drawable.ic_mark).getConstantState())){
+                        btn_follow.setImageResource(R.drawable.ic_marked);
+                        toast = Toast.makeText(context, "Followed", Toast.LENGTH_SHORT);
+                        toast.show();
+                        MainActivity.followedComicViewModel.insert(new FollowedComic(comics.get((Integer) btn_follow.getTag()).endpoint));
+                    }else{
+                        btn_follow.setImageResource(R.drawable.ic_mark);
+                        toast = Toast.makeText(context, "Unollowed", Toast.LENGTH_SHORT);
+                        toast.show();
+                        MainActivity.followedComicViewModel.delete(new FollowedComic(comics.get((Integer) btn_follow.getTag()).endpoint));
+                    }
                 }
             });
         }

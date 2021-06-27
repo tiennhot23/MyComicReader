@@ -155,15 +155,15 @@
 
             </TextView>
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/btn_follow"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/ic_mark"
+                android:src="@drawable/ic_mark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-            </ImageButton>
+            </ImageView>
 
 
         </RelativeLayout>
