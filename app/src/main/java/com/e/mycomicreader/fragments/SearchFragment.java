@@ -7,15 +7,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.e.mycomicreader.Common.Common;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.Retrofit.IComicAPI;
 import com.e.mycomicreader.adapters.ComicAdapter3;
+import com.e.mycomicreader.entity.HistorySearch;
 import com.e.mycomicreader.models.Comic;
 import com.e.mycomicreader.models.Genre;
+import com.e.mycomicreader.models.HistorySearchViewModel;
 import com.e.mycomicreader.views.MainActivity;
+import com.nex3z.flowlayout.FlowLayout;
 import dmax.dialog.SpotsDialog;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -37,10 +42,12 @@ public class SearchFragment  extends Fragment {
     EditText editText;
     Spinner spn_genre, spn_status;
     ImageView btn_search, btn_filter;
-
+    FlowLayout flowLayout;
     Map<String, String> genre_list = new HashMap<>();
 
     List<Comic> list_search_comic = new ArrayList<>();
+
+    public HistorySearchViewModel historySearchViewModel;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,6 +64,39 @@ public class SearchFragment  extends Fragment {
         editText = this.view.findViewById(R.id.edit_text);
         btn_search = this.view.findViewById(R.id.btn_search);
         btn_filter = this.view.findViewById(R.id.btn_filter);
+        flowLayout = this.view.findViewById(R.id.flow_layout);
+        historySearchViewModel = new ViewModelProvider(this).get(HistorySearchViewModel.class);
+        historySearchViewModel.delete(new HistorySearch(""));
+        historySearchViewModel.getAll().observe(this, new Observer<List<HistorySearch>>() {
+            @Override
+            public void onChanged(List<HistorySearch> historySearches) {
+                if(historySearches.size() > 10){
+                    historySearchViewModel.delete(historySearches.get(0));
+                }
+                flowLayout.removeAllViews();
+                for(int i=0; i<historySearches.size(); i++){
+                    TextView textView = new TextView(view.getContext());
+                    ViewGroup.LayoutParams params = new FlowLayout.LayoutParams(FlowLayout.LayoutParams.WRAP_CONTENT, FlowLayout.LayoutParams.WRAP_CONTENT);
+                    textView.setLayoutParams(params);
+                    textView.setId(i);
+                    textView.setText(historySearches.get(i).search_title);
+                    textView.setPadding(30,10,30,10);
+                    textView.setBackgroundResource(R.drawable.flowlayout_item);
+                    textView.setTextColor(getResources().getColor(R.color.black));
+
+                    textView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            editText.setText(textView.getText());
+                        }
+                    });
+
+                    flowLayout.addView(textView);
+
+                }
+                System.out.println(historySearches.size());
+            }
+        });
 
 
         if(MainActivity.isNetworkAvailable){
@@ -72,6 +112,8 @@ public class SearchFragment  extends Fragment {
                     fetchSearchComics(editText.getText().toString());
                     spn_genre.setSelection(0);
                     spn_status.setSelection(0);
+                    if(!editText.getText().toString().equals(""))
+                        historySearchViewModel.insert(new HistorySearch(editText.getText().toString()));
                 }
             }
         });
