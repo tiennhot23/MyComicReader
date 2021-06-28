@@ -5,12 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.e.mycomicreader.Common.Common;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.Retrofit.IComicAPI;
 import com.e.mycomicreader.adapters.ComicAdapter;
+import com.e.mycomicreader.entity.FollowedComic;
 import com.e.mycomicreader.models.Comic;
 import com.e.mycomicreader.views.MainActivity;
 import io.reactivex.disposables.CompositeDisposable;
@@ -46,6 +49,14 @@ public class HomeFragment extends Fragment {
             fetchLastUpdated();
             fetchRecommend();
         }
+        MainActivity.followedComicViewModel.getAll().observe((LifecycleOwner) view.getContext(), new Observer<List<FollowedComic>>() {
+            @Override
+            public void onChanged(List<FollowedComic> followedComics) {
+                recyclerLastUpdated.getAdapter().notifyDataSetChanged();
+                recyclerRecommend.getAdapter().notifyDataSetChanged();
+            }
+        });
+
 
         return view;
     }
@@ -56,15 +67,15 @@ public class HomeFragment extends Fragment {
             listLastUpdated.addAll(MainActivity.comics.subList(MainActivity.comics.size()-10, MainActivity.comics.size()-1));
         else
             listLastUpdated.addAll(MainActivity.comics);
-        recyclerLastUpdated.setAdapter(new ComicAdapter(view.getContext(), listLastUpdated));
+        recyclerLastUpdated.setAdapter(new ComicAdapter(view.getContext(), listLastUpdated, MainActivity.isFolowed));
     }
 
     private void fetchRecommend(){
         List<Comic> listRecommend = new ArrayList<>();
         listRecommend = Common.sortRating(MainActivity.comics);
         if(MainActivity.comics.size() > 10)
-            recyclerRecommend.setAdapter(new ComicAdapter(view.getContext(), listRecommend.subList(0,9)));
+            recyclerRecommend.setAdapter(new ComicAdapter(view.getContext(), listRecommend.subList(0,9), MainActivity.isFolowed));
         else
-            recyclerRecommend.setAdapter(new ComicAdapter(view.getContext(), listRecommend));
+            recyclerRecommend.setAdapter(new ComicAdapter(view.getContext(), listRecommend, MainActivity.isFolowed));
     }
 }

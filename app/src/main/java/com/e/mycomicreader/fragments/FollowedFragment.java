@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,6 +22,7 @@ import dmax.dialog.SpotsDialog;
 import io.reactivex.disposables.CompositeDisposable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class FollowedFragment extends Fragment {
@@ -34,6 +34,7 @@ public class FollowedFragment extends Fragment {
     RecyclerView recycler;
 
     public FollowedComicViewModel followedComicViewModel;
+    public static List<Comic> listFollowedComic = new ArrayList<>();
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(
@@ -44,14 +45,19 @@ public class FollowedFragment extends Fragment {
         followedComicViewModel = new ViewModelProvider(this).get(FollowedComicViewModel.class);
         recycler = this.view.findViewById(R.id.recycler);
         recycler.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
-
+        if (MainActivity.isNetworkAvailable) {
+            fetchFollowedComic(MainActivity.isFolowed);
+        }
         followedComicViewModel.getAll().observe(this, new Observer<List<FollowedComic>>() {
             @Override
             public void onChanged(List<FollowedComic> followedComics) {
-                if (MainActivity.isNetworkAvailable) {
-                    fetchFollowedComic(followedComics);
-                    Toast.makeText(view.getContext(), "datachanged", Toast.LENGTH_SHORT).show();
+                listFollowedComic.clear();
+                for(int i=0; i<MainActivity.comics.size(); i++){
+                    if(MainActivity.isFolowed.containsKey(MainActivity.comics.get(i).endpoint)){
+                        listFollowedComic.add(MainActivity.comics.get(i));
+                    }
                 }
+                recycler.getAdapter().notifyDataSetChanged();
             }
         });
 
@@ -59,18 +65,16 @@ public class FollowedFragment extends Fragment {
         return view;
     }
 
-    private void fetchFollowedComic(List<FollowedComic> followedComics) {
+    private void fetchFollowedComic(HashMap<String, Boolean> isFollowed) {
         AlertDialog dialog = new SpotsDialog.Builder().setContext(this.view.getContext()).setMessage("Loading...").build();
         dialog.show();
-        List<Comic> listFollowedComic = new ArrayList<>();
-        for(int i=0; i<followedComics.size(); i++){
-            for(int j=0; j<MainActivity.comics.size(); j++){
-                if(MainActivity.comics.get(j).endpoint.equals(followedComics.get(i).endpoint)){
-                    listFollowedComic.add(MainActivity.comics.get(j));
+        System.out.println("FOLLOWED FRAGMENT");
+            for(int i=0; i<MainActivity.comics.size(); i++){
+                if(isFollowed.containsKey(MainActivity.comics.get(i).endpoint)){
+                    listFollowedComic.add(MainActivity.comics.get(i));
                 }
             }
-        }
-        recycler.setAdapter(new ComicAdapter(view.getContext(), listFollowedComic));
+        recycler.setAdapter(new ComicAdapter(view.getContext(), listFollowedComic, MainActivity.isFolowed));
         dialog.dismiss();
     }
 }

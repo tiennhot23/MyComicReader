@@ -94,7 +94,6 @@ public class SearchFragment  extends Fragment {
                     flowLayout.addView(textView);
 
                 }
-                System.out.println(historySearches.size());
             }
         });
 

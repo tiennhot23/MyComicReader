@@ -11,12 +11,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 import com.e.mycomicreader.Common.Common;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.Retrofit.IComicAPI;
 import com.e.mycomicreader.adapters.MainViewPagerAdapter;
+import com.e.mycomicreader.entity.FollowedComic;
 import com.e.mycomicreader.fragments.FollowedFragment;
 import com.e.mycomicreader.fragments.HomeFragment;
 import com.e.mycomicreader.fragments.LibraryFragment;
@@ -31,6 +33,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends FragmentActivity {
@@ -40,7 +43,8 @@ public class MainActivity extends FragmentActivity {
     private MeowBottomNavigation bottomNavigation;
 
     public static boolean isNetworkAvailable;
-    public static List<Boolean> isFolowed = new ArrayList<>();
+    public static HashMap<String, Boolean> isFolowed = new HashMap<>();
+    public static List<Comic> listFollowedComic = new ArrayList<>();
     public static List<Comic> comics = new ArrayList<>();
     public static FollowedComicViewModel followedComicViewModel;
 
@@ -76,6 +80,7 @@ public class MainActivity extends FragmentActivity {
     private void fetchComic() {
         AlertDialog dialog = new SpotsDialog.Builder().setContext(this).setMessage("Loading...").build();
         dialog.show();
+        System.out.println("MAIN ACTIVITY 1");
         compositeDisposable.add(iComicAPI.getComics()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -83,10 +88,23 @@ public class MainActivity extends FragmentActivity {
                     @Override
                     public void accept(List<Comic> comic) throws Exception {
                         comics.addAll(comic);
+                        fetchFollowedComic();
                         dialog.dismiss();
                         UI();
                     }
                 }));
+    }
+
+    private void fetchFollowedComic(){
+        followedComicViewModel.getAll().observe(this, new Observer<List<FollowedComic>>() {
+            @Override
+            public void onChanged(List<FollowedComic> followedComics) {
+                for(int i=0; i<followedComics.size(); i++){
+                    if(!isFolowed.containsKey(followedComics.get(i).endpoint))
+                        isFolowed.put(followedComics.get(i).endpoint, true);
+                }
+            }
+        });
     }
 
     public void UI() {
