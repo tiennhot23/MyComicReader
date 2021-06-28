@@ -61,6 +61,7 @@
                     android:id="@+id/title_comic"
                     android:textSize="20sp"
                     android:text="TITLE"
+                    android:singleLine="true"
                     android:ellipsize="end"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -71,7 +72,8 @@
                     android:layout_margin="5dp"
                     android:id="@+id/genres"
                     android:text="genres"
-                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:ellipsize="end"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -87,7 +89,7 @@
                         android:id="@+id/rating"
                         android:text="rating"
                         android:layout_weight="1"
-                        android:maxLines="1"
+                        android:singleLine="true"
                         android:ellipsize="end"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
@@ -99,7 +101,7 @@
                         android:id="@+id/chapter"
                         android:layout_weight="1"
                         android:text="chapter"
-                        android:maxLines="1"
+                        android:singleLine="true"
                         android:ellipsize="end"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">

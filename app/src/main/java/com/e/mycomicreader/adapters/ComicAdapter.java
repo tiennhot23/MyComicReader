@@ -1,6 +1,7 @@
 package com.e.mycomicreader.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.entity.FollowedComic;
 import com.e.mycomicreader.models.Comic;
+import com.e.mycomicreader.views.DetailComicActivity;
 import com.e.mycomicreader.views.MainActivity;
 import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
@@ -72,7 +74,9 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>{
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent = new Intent(context, DetailComicActivity.class);
+                    intent.putExtra("endpoint", comics.get(getBindingAdapterPosition()).endpoint);
+                    context.startActivity(intent);
                 }
             } );
 
@@ -84,7 +88,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>{
                         btn_follow.setImageResource(R.drawable.ic_marked);
                         toast = Toast.makeText(context, "Followed", Toast.LENGTH_SHORT);
                         toast.show();
-                        MainActivity.followedComicViewModel.insert(new FollowedComic(comics.get((Integer) btn_follow.getTag()).endpoint));
+                        MainActivity.followedComicViewModel.insert(new FollowedComic(comics.get(getBindingAdapterPosition()).endpoint));
                         if(!isFollowed.containsKey(comics.get((Integer) btn_follow.getTag()).endpoint)){
                             isFollowed.put(comics.get((Integer) btn_follow.getTag()).endpoint, true);
 //                            FollowedFragment.listFollowedComic.add(comics.get((Integer) btn_follow.getTag()));
@@ -93,7 +97,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>{
                         btn_follow.setImageResource(R.drawable.ic_mark);
                         toast = Toast.makeText(context, "Unollowed", Toast.LENGTH_SHORT);
                         toast.show();
-                        MainActivity.followedComicViewModel.delete(new FollowedComic(comics.get((Integer) btn_follow.getTag()).endpoint));
+                        MainActivity.followedComicViewModel.delete(new FollowedComic(comics.get(getBindingAdapterPosition()).endpoint));
                         if(isFollowed.containsKey(comics.get((Integer) btn_follow.getTag()).endpoint)){
                             isFollowed.remove(comics.get((Integer) btn_follow.getTag()).endpoint);
 //                            FollowedFragment.listFollowedComic.remove(comics.get((Integer) btn_follow.getTag()));

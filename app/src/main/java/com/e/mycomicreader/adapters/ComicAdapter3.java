@@ -83,7 +83,7 @@ public class ComicAdapter3 extends RecyclerView.Adapter<ComicAdapter3.ViewHolder
                         btn_follow.setImageResource(R.drawable.ic_marked);
                         toast = Toast.makeText(context, "Followed", Toast.LENGTH_SHORT);
                         toast.show();
-                        MainActivity.followedComicViewModel.insert(new FollowedComic(comics.get((Integer) btn_follow.getTag()).endpoint));
+                        MainActivity.followedComicViewModel.insert(new FollowedComic(comics.get(getBindingAdapterPosition()).endpoint));
                         if(!isFollowed.containsKey(comics.get((Integer) btn_follow.getTag()).endpoint)){
                             isFollowed.put(comics.get((Integer) btn_follow.getTag()).endpoint, true);
 //                            FollowedFragment.listFollowedComic.add(comics.get((Integer) btn_follow.getTag()));
@@ -92,7 +92,7 @@ public class ComicAdapter3 extends RecyclerView.Adapter<ComicAdapter3.ViewHolder
                         btn_follow.setImageResource(R.drawable.ic_mark);
                         toast = Toast.makeText(context, "Unollowed", Toast.LENGTH_SHORT);
                         toast.show();
-                        MainActivity.followedComicViewModel.delete(new FollowedComic(comics.get((Integer) btn_follow.getTag()).endpoint));
+                        MainActivity.followedComicViewModel.delete(new FollowedComic(comics.get(getBindingAdapterPosition()).endpoint));
                         if(isFollowed.containsKey(comics.get((Integer) btn_follow.getTag()).endpoint)){
                             isFollowed.remove(comics.get((Integer) btn_follow.getTag()).endpoint);
 //                            FollowedFragment.listFollowedComic.remove(comics.get((Integer) btn_follow.getTag()));

@@ -1,6 +1,7 @@
 package com.e.mycomicreader.Retrofit;
 
 import com.e.mycomicreader.models.Comic;
+import com.e.mycomicreader.models.DetailComic;
 import com.e.mycomicreader.models.Genre;
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -23,4 +24,7 @@ public interface IComicAPI {
 
     @GET("search/{query}")
     Observable<List<Comic>> getSearchComic(@Path("query")String query);
+
+    @GET("{endpoint}")
+    Observable<List<DetailComic>> getDetailComic(@Path("endpoint")String endpoint);
 }

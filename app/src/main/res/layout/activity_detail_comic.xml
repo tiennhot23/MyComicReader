@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".views.DetailComicActivity">
+
+    <ImageView
+        android:id="@+id/theme"
+        android:alpha="0.3"
+        android:src="@drawable/xinh"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </ImageView>
+
+    <ImageView
+        android:id="@+id/btn_go_back"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_goback"
+        android:scaleType="fitXY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </ImageView>
+
+    <TextView
+        android:layout_alignTop="@+id/btn_go_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/title_comic"
+        android:layout_toEndOf="@id/btn_go_back"
+        android:text="TITLE COMIC"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:gravity="center">
+    </TextView>
+
+    <ImageView
+        android:id="@+id/thumb"
+        android:src="@drawable/xinh"
+        android:scaleType="fitXY"
+        android:layout_width="150dp"
+        android:layout_height="170dp"
+        android:layout_below="@id/title_comic"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp">
+
+    </ImageView>
+
+    <RelativeLayout
+        android:id="@+id/relative"
+        android:layout_toStartOf="@id/thumb"
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_alignTop="@id/thumb"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tacgia"
+            android:text="Tác giả: "
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:id="@+id/author"
+            android:layout_toRightOf="@+id/tacgia"
+            android:text="Tên tác giả"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:ellipsize="end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/author"
+            android:id="@+id/tinhtrang"
+            android:text="Tình trạng: "
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:id="@+id/status"
+            android:layout_alignTop="@id/tinhtrang"
+            android:layout_toRightOf="@+id/tinhtrang"
+            android:text="Đang tiến hành"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:ellipsize="end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/status"
+            android:id="@+id/theloai"
+            android:text="Thể loại: "
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:id="@+id/genre"
+            android:layout_alignTop="@id/theloai"
+            android:layout_toRightOf="@+id/theloai"
+            android:text="Manga, Xuyên Không, Võ thuật"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:ellipsize="end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/genre"
+            android:id="@+id/danhgia"
+            android:text="Đánh giá: "
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:id="@+id/rating"
+            android:layout_alignTop="@id/danhgia"
+            android:layout_toRightOf="@+id/danhgia"
+            android:text="9.1"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:ellipsize="end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/rating"
+            android:id="@+id/ngaycapnhat"
+            android:text="Cập nhật: "
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:id="@+id/updated_on"
+            android:layout_alignTop="@id/ngaycapnhat"
+            android:layout_toRightOf="@+id/ngaycapnhat"
+            android:text="2021-12-12"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:ellipsize="end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/updated_on"
+            android:id="@+id/luotxem"
+            android:text="Lượt xem: "
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:id="@+id/view"
+            android:layout_alignTop="@id/luotxem"
+            android:layout_toRightOf="@+id/luotxem"
+            android:text="100000"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:ellipsize="end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </TextView>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tomtat"
+        android:text="Tóm tắt"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative"
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="10dp">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/desc"
+        android:layout_marginTop="3sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nội dungTruyện tranh Phá Bỏ Giới Hạn thuộc thể loại Manhwa, Webtoons....."
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:layout_below="@+id/tomtat"
+        android:layout_marginHorizontal="10dp">
+    </TextView>
+
+    <LinearLayout
+        android:layout_below="@id/desc"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="4">
+        <androidx.cardview.widget.CardView
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="10dp"
+            app:cardBackgroundColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:id="@+id/read"
+                android:text="Đọc từ đầu"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </TextView>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="10dp"
+            app:cardBackgroundColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:id="@+id/read_continue"
+                android:text="Đọc tiếp"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </TextView>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="10dp"
+            app:cardBackgroundColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:id="@+id/chapter_list"
+                android:text="Danh sách chương"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </TextView>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="10dp"
+            app:cardBackgroundColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:id="@+id/btn_follow"
+                android:text="Theo dõi"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </TextView>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+
+</RelativeLayout>
