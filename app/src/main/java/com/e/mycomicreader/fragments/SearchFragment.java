@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import com.e.mycomicreader.Common.Common;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.Retrofit.IComicAPI;
 import com.e.mycomicreader.adapters.ComicAdapter3;
+import com.e.mycomicreader.entity.FollowedComic;
 import com.e.mycomicreader.entity.HistorySearch;
 import com.e.mycomicreader.models.Comic;
 import com.e.mycomicreader.models.Genre;
@@ -99,10 +101,18 @@ public class SearchFragment  extends Fragment {
 
 
         if(MainActivity.isNetworkAvailable){
-            fetchSearchComics("");
+//            fetchSearchComics("");
+            recycler.setAdapter(new ComicAdapter3(view.getContext(), MainActivity.comics, MainActivity.isFolowed));
             fetchGenres();
             fetchStatus();
         }
+
+        MainActivity.followedComicViewModel.getAll().observe((LifecycleOwner) view.getContext(), new Observer<List<FollowedComic>>() {
+            @Override
+            public void onChanged(List<FollowedComic> followedComics) {
+                recycler.getAdapter().notifyDataSetChanged();
+            }
+        });
 
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,7 +177,7 @@ public class SearchFragment  extends Fragment {
                     .subscribe(new Consumer<List<Comic>>() {
                         @Override
                         public void accept(List<Comic> comics) throws Exception {
-                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics));
+                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFolowed));
                             dialog.dismiss();
                         }
                     }));
@@ -180,7 +190,7 @@ public class SearchFragment  extends Fragment {
                     .subscribe(new Consumer<List<Comic>>() {
                         @Override
                         public void accept(List<Comic> comics) throws Exception {
-                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics));
+                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFolowed));
                             dialog.dismiss();
                         }
                     }));
@@ -198,12 +208,12 @@ public class SearchFragment  extends Fragment {
                     .subscribe(new Consumer<List<Comic>>() {
                         @Override
                         public void accept(List<Comic> comics) throws Exception {
-                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics));
+                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFolowed));
                             dialog.dismiss();
                         }
                     }));
         }else if (query.equals("") && genre.equals("Tất cả")){
-            recycler.setAdapter(new ComicAdapter3(view.getContext(), MainActivity.comics));
+            recycler.setAdapter(new ComicAdapter3(view.getContext(), MainActivity.comics, MainActivity.isFolowed));
         }
         else if(query.equals("")){
             AlertDialog dialog = new SpotsDialog.Builder().setContext(this.view.getContext()).setMessage("Loading...").build();
@@ -214,7 +224,7 @@ public class SearchFragment  extends Fragment {
                     .subscribe(new Consumer<List<Comic>>() {
                         @Override
                         public void accept(List<Comic> comics) throws Exception {
-                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics));
+                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFolowed));
                             dialog.dismiss();
                         }
                     }));
@@ -227,7 +237,7 @@ public class SearchFragment  extends Fragment {
                     .subscribe(new Consumer<List<Comic>>() {
                         @Override
                         public void accept(List<Comic> comics) throws Exception {
-                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics));
+                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFolowed));
                             dialog.dismiss();
                         }
                     }));

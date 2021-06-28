@@ -112,7 +112,7 @@
                 android:src="@drawable/ic_mark"
                 android:layout_marginEnd="10dp"
                 android:layout_alignParentEnd="true"
-                android:id="@+id/thumb2"
+                android:id="@+id/btn_follow"
                 android:layout_alignBottom="@id/linear"
                 android:layout_alignTop="@id/linear"
                 android:layout_width="wrap_content"
