@@ -1,5 +1,6 @@
 package com.e.mycomicreader.Retrofit;
 
+import com.e.mycomicreader.models.Chapter;
 import com.e.mycomicreader.models.Comic;
 import com.e.mycomicreader.models.DetailComic;
 import com.e.mycomicreader.models.Genre;
@@ -27,4 +28,7 @@ public interface IComicAPI {
 
     @GET("{endpoint}")
     Observable<List<DetailComic>> getDetailComic(@Path("endpoint")String endpoint);
+
+    @GET("chapter/{chapter_endpoint}")
+    Observable<List<Chapter>> getChapter(@Path("chapter_endpoint")String chapter_endpoint);
 }
