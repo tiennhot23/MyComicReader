@@ -14,6 +14,7 @@ import com.e.mycomicreader.models.Chapter;
 import com.e.mycomicreader.views.ChapterActivity;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class DetailComicAdapter extends RecyclerView.Adapter<DetailComicAdapter.ViewHolder>{
@@ -60,7 +61,8 @@ public class DetailComicAdapter extends RecyclerView.Adapter<DetailComicAdapter.
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ChapterActivity.class);
-                    intent.putExtra("chapter_endpoint", chapter_list.get(getBindingAdapterPosition()).chapter_endpoint);
+                    intent.putExtra("position", getBindingAdapterPosition());
+                    intent.putExtra("chapter_list", (Serializable) chapter_list);
                     context.startActivity(intent);
                 }
             });

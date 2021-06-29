@@ -1,8 +1,9 @@
 package com.e.mycomicreader.models;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Chapter {
+public class Chapter implements Serializable {
     public String chapter_title;
     public String chapter_endpoint;
     public List<String> chapter_image;
