@@ -1,6 +1,7 @@
 package com.e.mycomicreader.adapters;
 
 import android.content.Context;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.ViewHold
     @NotNull
     @Override
     public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
-        View row = LayoutInflater.from(context).inflate(R.layout.chapter_image_item, parent, false);
+        View row = LayoutInflater.from(new ContextThemeWrapper(context, R.style.Theme_AppCompat)).inflate(R.layout.chapter_image_item, parent, false);
         return new ViewHolder(row);
     }
 

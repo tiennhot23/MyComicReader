@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-        <activity android:name=".views.ChapterActivity"></activity>
+        <activity android:name=".views.ChapterActivity" />
         <activity android:name=".views.DetailComicActivity" />
         <activity android:name=".views.SplashScreen" />
         <activity android:name=".views.MainActivity">
