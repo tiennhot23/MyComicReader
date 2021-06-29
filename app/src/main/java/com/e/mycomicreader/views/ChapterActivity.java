@@ -1,19 +1,26 @@
 package com.e.mycomicreader.views;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.e.mycomicreader.Common.AsyncTaskResponse;
 import com.e.mycomicreader.Common.Common;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.Retrofit.IComicAPI;
 import com.e.mycomicreader.adapters.ChapterAdapter;
+import com.e.mycomicreader.entity.MarkedChapter;
 import com.e.mycomicreader.models.Chapter;
+import com.e.mycomicreader.models.MarkedChapterViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import dmax.dialog.SpotsDialog;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -22,17 +29,22 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class ChapterActivity extends AppCompatActivity {
+public class ChapterActivity extends AppCompatActivity implements AsyncTaskResponse{
     private CompositeDisposable compositeDisposable;
     IComicAPI iComicAPI;
     private RecyclerView recycler;
     private int position;
     private List<Chapter> chapter_list;
-    private String chapter_endpoint;
+    private String chapter_endpoint, endpoint;
     private FloatingActionButton more, next, prev, beenhere;
     private Boolean isMoreClicked = true;
+    private Boolean isMarkedChapterExisted = false;
+
+    MarkedChapterViewModel markedChapterViewModel;
+    BackGroundTask backGroundTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +62,7 @@ public class ChapterActivity extends AppCompatActivity {
         recycler.setLayoutManager(new LinearLayoutManager(this));
         compositeDisposable = new CompositeDisposable();
         iComicAPI = Common.getAPI();
+        markedChapterViewModel = new ViewModelProvider(this).get(MarkedChapterViewModel.class);
 
         fetchChapter();
 
@@ -94,9 +107,18 @@ public class ChapterActivity extends AppCompatActivity {
         beenhere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(isMarkedChapterExisted){
+                    markedChapterViewModel.update(new MarkedChapter(DetailComicActivity.endpoint, chapter_endpoint));
+                }else{
+                    markedChapterViewModel.insert(new MarkedChapter(DetailComicActivity.endpoint, chapter_endpoint));
+                }
+                Toast.makeText(ChapterActivity.this, "Đã đánh dấu", Toast.LENGTH_SHORT).show();
             }
         });
+
+        backGroundTask = new BackGroundTask(this, markedChapterViewModel, DetailComicActivity.endpoint);
+        backGroundTask.res = this;
+        backGroundTask.execute();
     }
 
     private void fetchChapter() {
@@ -137,6 +159,61 @@ public class ChapterActivity extends AppCompatActivity {
             next.startAnimation(anim);
             prev.startAnimation(anim);
             beenhere.startAnimation(anim);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(backGroundTask != null) backGroundTask.cancel(true);
+        super.onDestroy();
+    }
+
+    @Override
+    public void processFinish(String output) {
+        if(output == null){
+            isMarkedChapterExisted = false;
+        }else{
+            isMarkedChapterExisted = true;
+        }
+    }
+
+    private static class BackGroundTask extends AsyncTask<Void, Void, String> {
+
+        //Prevent leak
+        private WeakReference<Activity> weakActivity;
+        private MarkedChapterViewModel markedChapterViewModel;
+        private String endpoint;
+        private AlertDialog dialog;
+        private AsyncTaskResponse res = null;
+
+        public BackGroundTask(Activity activity, MarkedChapterViewModel markedChapterViewModel, String endpoint) {
+            weakActivity = new WeakReference<>(activity);
+            this.markedChapterViewModel = markedChapterViewModel;
+            this.endpoint = endpoint;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new SpotsDialog.Builder().setContext(weakActivity.get()).setMessage("Loading...").build();
+            dialog.show();
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            MarkedChapter markedChapter = markedChapterViewModel.findMarkedChapter(endpoint);
+            if(markedChapter == null) return null;
+            String chapter_endpoint = markedChapter.chapter_endpoint;
+            return chapter_endpoint;
+        }
+
+        @Override
+        protected void onPostExecute(String chapter_endpoint) {
+            Activity activity = weakActivity.get();
+            if(activity == null) {
+                return;
+            }
+            dialog.dismiss();
+            res.processFinish(chapter_endpoint);
         }
     }
 }
