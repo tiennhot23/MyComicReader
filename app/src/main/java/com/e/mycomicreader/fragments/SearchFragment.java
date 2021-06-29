@@ -102,7 +102,7 @@ public class SearchFragment  extends Fragment {
 
         if(MainActivity.isNetworkAvailable){
 //            fetchSearchComics("");
-            recycler.setAdapter(new ComicAdapter3(view.getContext(), MainActivity.comics, MainActivity.isFolowed));
+            recycler.setAdapter(new ComicAdapter3(view.getContext(), MainActivity.comics, MainActivity.isFollowed));
             fetchGenres();
             fetchStatus();
         }
@@ -177,7 +177,7 @@ public class SearchFragment  extends Fragment {
                     .subscribe(new Consumer<List<Comic>>() {
                         @Override
                         public void accept(List<Comic> comics) throws Exception {
-                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFolowed));
+                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFollowed));
                             dialog.dismiss();
                         }
                     }));
@@ -190,7 +190,7 @@ public class SearchFragment  extends Fragment {
                     .subscribe(new Consumer<List<Comic>>() {
                         @Override
                         public void accept(List<Comic> comics) throws Exception {
-                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFolowed));
+                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFollowed));
                             dialog.dismiss();
                         }
                     }));
@@ -208,12 +208,12 @@ public class SearchFragment  extends Fragment {
                     .subscribe(new Consumer<List<Comic>>() {
                         @Override
                         public void accept(List<Comic> comics) throws Exception {
-                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFolowed));
+                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFollowed));
                             dialog.dismiss();
                         }
                     }));
         }else if (query.equals("") && genre.equals("Tất cả")){
-            recycler.setAdapter(new ComicAdapter3(view.getContext(), MainActivity.comics, MainActivity.isFolowed));
+            recycler.setAdapter(new ComicAdapter3(view.getContext(), MainActivity.comics, MainActivity.isFollowed));
         }
         else if(query.equals("")){
             AlertDialog dialog = new SpotsDialog.Builder().setContext(this.view.getContext()).setMessage("Loading...").build();
@@ -224,7 +224,7 @@ public class SearchFragment  extends Fragment {
                     .subscribe(new Consumer<List<Comic>>() {
                         @Override
                         public void accept(List<Comic> comics) throws Exception {
-                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFolowed));
+                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFollowed));
                             dialog.dismiss();
                         }
                     }));
@@ -237,7 +237,7 @@ public class SearchFragment  extends Fragment {
                     .subscribe(new Consumer<List<Comic>>() {
                         @Override
                         public void accept(List<Comic> comics) throws Exception {
-                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFolowed));
+                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFollowed));
                             dialog.dismiss();
                         }
                     }));

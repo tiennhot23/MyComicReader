@@ -67,15 +67,15 @@ public class HomeFragment extends Fragment {
             listLastUpdated.addAll(MainActivity.comics.subList(MainActivity.comics.size()-10, MainActivity.comics.size()-1));
         else
             listLastUpdated.addAll(MainActivity.comics);
-        recyclerLastUpdated.setAdapter(new ComicAdapter(view.getContext(), listLastUpdated, MainActivity.isFolowed));
+        recyclerLastUpdated.setAdapter(new ComicAdapter(view.getContext(), listLastUpdated, MainActivity.isFollowed));
     }
 
     private void fetchRecommend(){
         List<Comic> listRecommend = new ArrayList<>();
         listRecommend = Common.sortRating(MainActivity.comics);
         if(MainActivity.comics.size() > 10)
-            recyclerRecommend.setAdapter(new ComicAdapter(view.getContext(), listRecommend.subList(0,9), MainActivity.isFolowed));
+            recyclerRecommend.setAdapter(new ComicAdapter(view.getContext(), listRecommend.subList(0,9), MainActivity.isFollowed));
         else
-            recyclerRecommend.setAdapter(new ComicAdapter(view.getContext(), listRecommend, MainActivity.isFolowed));
+            recyclerRecommend.setAdapter(new ComicAdapter(view.getContext(), listRecommend, MainActivity.isFollowed));
     }
 }

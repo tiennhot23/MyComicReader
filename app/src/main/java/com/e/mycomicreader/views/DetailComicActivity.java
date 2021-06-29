@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.e.mycomicreader.Common.Common;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.Retrofit.IComicAPI;
+import com.e.mycomicreader.entity.FollowedComic;
 import com.e.mycomicreader.fragments.MyBottomSheetFragement;
 import com.e.mycomicreader.models.DetailComic;
 import com.squareup.picasso.Picasso;
@@ -26,6 +28,7 @@ public class DetailComicActivity extends AppCompatActivity {
     private TextView title_comic, author, status, rating, updated_on, genre, view, desc, read, read_continue, chapter_list, btn_follow;
     private ImageView theme, thumb ,btn_go_back;
     private CompositeDisposable compositeDisposable;
+    private Toast toast;
 
     IComicAPI iComicAPI;
     MyBottomSheetFragement bottomSheetDialog;
@@ -55,12 +58,46 @@ public class DetailComicActivity extends AppCompatActivity {
         btn_follow = findViewById(R.id.btn_follow);
         btn_go_back = findViewById(R.id.btn_go_back);
 
+        btn_go_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        read.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        read_continue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         fetchDetailComic();
 
         chapter_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bottomSheetDialog.show(getSupportFragmentManager(), bottomSheetDialog.getTag());
+            }
+        });
+
+        btn_follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(toast != null) toast.cancel();
+                toast = Toast.makeText(getBaseContext(),"Followed", Toast.LENGTH_SHORT);
+                toast.show();
+                MainActivity.followedComicViewModel.insert(new FollowedComic(endpoint));
+                if(!MainActivity.isFollowed.containsKey(endpoint)){
+                    MainActivity.isFollowed.put(endpoint, true);
+                }
             }
         });
     }

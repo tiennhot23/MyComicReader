@@ -43,7 +43,7 @@ public class MainActivity extends FragmentActivity {
     private MeowBottomNavigation bottomNavigation;
 
     public static boolean isNetworkAvailable;
-    public static HashMap<String, Boolean> isFolowed = new HashMap<>();
+    public static HashMap<String, Boolean> isFollowed = new HashMap<>();
     public static List<Comic> listFollowedComic = new ArrayList<>();
     public static List<Comic> comics = new ArrayList<>();
     public static FollowedComicViewModel followedComicViewModel;
@@ -100,8 +100,8 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onChanged(List<FollowedComic> followedComics) {
                 for(int i=0; i<followedComics.size(); i++){
-                    if(!isFolowed.containsKey(followedComics.get(i).endpoint))
-                        isFolowed.put(followedComics.get(i).endpoint, true);
+                    if(!isFollowed.containsKey(followedComics.get(i).endpoint))
+                        isFollowed.put(followedComics.get(i).endpoint, true);
                 }
             }
         });

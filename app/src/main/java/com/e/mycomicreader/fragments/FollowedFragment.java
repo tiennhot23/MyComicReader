@@ -46,14 +46,14 @@ public class FollowedFragment extends Fragment {
         recycler = this.view.findViewById(R.id.recycler);
         recycler.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
         if (MainActivity.isNetworkAvailable) {
-            fetchFollowedComic(MainActivity.isFolowed);
+            fetchFollowedComic(MainActivity.isFollowed);
         }
         followedComicViewModel.getAll().observe(this, new Observer<List<FollowedComic>>() {
             @Override
             public void onChanged(List<FollowedComic> followedComics) {
                 listFollowedComic.clear();
                 for(int i=0; i<MainActivity.comics.size(); i++){
-                    if(MainActivity.isFolowed.containsKey(MainActivity.comics.get(i).endpoint)){
+                    if(MainActivity.isFollowed.containsKey(MainActivity.comics.get(i).endpoint)){
                         listFollowedComic.add(MainActivity.comics.get(i));
                     }
                 }
@@ -74,7 +74,7 @@ public class FollowedFragment extends Fragment {
                     listFollowedComic.add(MainActivity.comics.get(i));
                 }
             }
-        recycler.setAdapter(new ComicAdapter(view.getContext(), listFollowedComic, MainActivity.isFolowed));
+        recycler.setAdapter(new ComicAdapter(view.getContext(), listFollowedComic, MainActivity.isFollowed));
         dialog.dismiss();
     }
 }
