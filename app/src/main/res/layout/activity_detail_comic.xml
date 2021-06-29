@@ -204,20 +204,28 @@
 
     </TextView>
 
-    <TextView
-        android:id="@+id/desc"
+    <com.bskim.maxheightscrollview.widgets.MaxHeightScrollView
         android:layout_marginTop="3sp"
+        android:layout_below="@+id/tomtat"
+        android:id="@+id/scrollview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nội dungTruyện tranh Phá Bỏ Giới Hạn thuộc thể loại Manhwa, Webtoons....."
-        android:textColor="@color/white"
-        android:textSize="15sp"
-        android:layout_below="@+id/tomtat"
-        android:layout_marginHorizontal="10dp">
-    </TextView>
+        app:maxHeight="250dp">
+        <TextView
+            android:id="@+id/desc"
+            android:layout_marginTop="3sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nội dungTruyện tranh Phá Bỏ Giới Hạn thuộc thể loại Manhwa, Webtoons....."
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:layout_below="@+id/tomtat"
+            android:layout_marginHorizontal="10dp">
+        </TextView>
+    </com.bskim.maxheightscrollview.widgets.MaxHeightScrollView>
 
     <LinearLayout
-        android:layout_below="@id/desc"
+        android:layout_below="@id/scrollview"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
