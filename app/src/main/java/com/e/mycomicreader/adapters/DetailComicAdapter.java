@@ -7,11 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.e.mycomicreader.Common.IRecylerClickListener;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.models.Chapter;
+import com.e.mycomicreader.models.DetailComic;
 import com.e.mycomicreader.views.ChapterActivity;
+import com.e.mycomicreader.views.MainActivity;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -20,13 +24,17 @@ import java.util.List;
 public class DetailComicAdapter extends RecyclerView.Adapter<DetailComicAdapter.ViewHolder>{
     Context context;
     List<Chapter> chapter_list;
+    DetailComic detailComic;
+    IRecylerClickListener recylerClickListener;
 
     public DetailComicAdapter() {
     }
 
-    public DetailComicAdapter(Context context, List<Chapter> chapter_list) {
+    public DetailComicAdapter(Context context, List<Chapter> chapter_list, DetailComic detailComic, IRecylerClickListener recylerClickListener) {
         this.context = context;
         this.chapter_list = chapter_list;
+        this.detailComic = detailComic;
+        this.recylerClickListener = recylerClickListener;
     }
 
     @NonNull
@@ -64,6 +72,18 @@ public class DetailComicAdapter extends RecyclerView.Adapter<DetailComicAdapter.
                     intent.putExtra("position", getBindingAdapterPosition());
                     intent.putExtra("chapter_list", (Serializable) chapter_list);
                     context.startActivity(intent);
+                }
+            });
+
+            btn_download.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(!MainActivity.isWritePermission){
+                        Toast.makeText(context, "Write permission denied", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    recylerClickListener.onItemClick(getBindingAdapterPosition());
+
                 }
             });
         }

@@ -1,15 +1,21 @@
 package com.e.mycomicreader.views;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -43,6 +49,7 @@ public class MainActivity extends FragmentActivity {
     private MeowBottomNavigation bottomNavigation;
 
     public static boolean isNetworkAvailable;
+    public static boolean isWritePermission;
     public static HashMap<String, Boolean> isFollowed = new HashMap<>();
     public static List<Comic> listFollowedComic = new ArrayList<>();
     public static List<Comic> comics = new ArrayList<>();
@@ -60,6 +67,7 @@ public class MainActivity extends FragmentActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(R.color.background_color);
         }
+        checkWriteExternalStorage();
 
 //        startSplashScreen();
 
@@ -231,5 +239,31 @@ public class MainActivity extends FragmentActivity {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
+    }
+
+    public void checkWriteExternalStorage() {
+        int hasWriteExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (hasWriteExternalStorage != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},69);
+        } else {
+            // ok can write
+//            System.out.println("Ok");
+            isWritePermission = true;
+
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 69) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // action
+//                System.out.println("okiii");
+                isWritePermission = true;
+            } else {
+                Toast.makeText(this, "Write External Storage denied!", Toast.LENGTH_SHORT).show();
+                isWritePermission = false;
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

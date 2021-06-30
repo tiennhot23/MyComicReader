@@ -2,9 +2,11 @@ package com.e.mycomicreader.views;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,11 +15,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.e.mycomicreader.Common.AsyncTaskResponse;
 import com.e.mycomicreader.Common.Common;
+import com.e.mycomicreader.Common.IRecylerClickListener;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.Retrofit.IComicAPI;
 import com.e.mycomicreader.entity.FollowedComic;
 import com.e.mycomicreader.entity.MarkedChapter;
 import com.e.mycomicreader.fragments.MyBottomSheetFragement;
+import com.e.mycomicreader.models.Chapter;
 import com.e.mycomicreader.models.DetailComic;
 import com.e.mycomicreader.models.MarkedChapterViewModel;
 import com.squareup.picasso.Picasso;
@@ -27,11 +31,13 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-import java.io.Serializable;
+import java.io.*;
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
-public class DetailComicActivity extends AppCompatActivity implements AsyncTaskResponse{
+public class DetailComicActivity extends AppCompatActivity implements AsyncTaskResponse, IRecylerClickListener {
 
     public static String endpoint;
     private TextView title_comic, author, status, rating, updated_on, genre, view, desc, read, read_continue, chapter_list, btn_follow;
@@ -163,11 +169,15 @@ public class DetailComicActivity extends AppCompatActivity implements AsyncTaskR
                         desc.setText(detailComics.get(0).desc);
                         Picasso.get().load(detailComics.get(0).theme).into(theme);
                         Picasso.get().load(detailComics.get(0).thumb).into(thumb);
-                        bottomSheetDialog = new MyBottomSheetFragement(getBaseContext(), detailComics.get(0).chapter_list);
+                        showBottomSheet();
 
                         dialog.dismiss();
                     }
                 }));
+    }
+
+    private void showBottomSheet(){
+        bottomSheetDialog = new MyBottomSheetFragement(getBaseContext(), detailComic.chapter_list, detailComic, this);
     }
 
 
@@ -182,6 +192,22 @@ public class DetailComicActivity extends AppCompatActivity implements AsyncTaskR
     @Override
     public void processFinish(String output) {
         chapter_endpoint = output;
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        File file = new File(Environment.getExternalStoragePublicDirectory("/Download comic/"+detailComic.title), "/"+detailComic.chapter_list.get(position).chapter_title);
+        if(!file.exists()){
+            File pa = new File(Environment.getExternalStoragePublicDirectory("/Download comic"), "/");
+            if(!pa.exists()) file.mkdirs();
+            file.mkdirs();
+            DownloadTask downloadTask = new DownloadTask(this, detailComic.chapter_list.get(position),detailComic);
+            String path = "/Download comic/"+detailComic.title+"/info";
+            String fileName = "/theme.jpg";
+            downloadTask.execute(detailComic.theme, path, fileName);
+        }else{
+            Toast.makeText(this, "Chap này đã được tải", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private static class BackGroundTask extends AsyncTask<Void, Void, String> {
@@ -223,4 +249,131 @@ public class DetailComicActivity extends AppCompatActivity implements AsyncTaskR
             res.processFinish(chapter_endpoint);
         }
     }
+
+
+    private static class DownloadTask extends AsyncTask<String, Integer, String> {
+        //Prevent leak
+        private WeakReference<Activity> weakActivity;
+        private Chapter chapter;
+        private DetailComic detailComic;
+        private ProgressDialog progressDialog;
+
+        private AsyncTaskResponse res = null;
+
+        public DownloadTask(Activity activity, Chapter chapter, DetailComic detailComic) {
+            weakActivity = new WeakReference<>(activity);
+            this.chapter = chapter;
+            this.detailComic = detailComic;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+            HttpURLConnection httpURLConnection = null;
+            try{
+//                for(int i=0; i<chapter.chapter_image.size(); i++){
+//                    URL url = new URL(chapter.chapter_image.get(i));
+//                    httpURLConnection = (HttpURLConnection) url.openConnection();
+//                    httpURLConnection.connect();
+//                    if (httpURLConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+//                        return "Server returned HTTP " + httpURLConnection.getResponseCode()
+//                                + " " + httpURLConnection.getResponseMessage();
+//                    }
+//                    File path = Environment.getExternalStoragePublicDirectory("/Download comic/"+detailComic.title+"/"+chapter.chapter_title);
+//                    File file = new File(path, "/"+i+".jpg");
+//                    // download the file
+//                    file.mkdir();
+//                    inputStream = httpURLConnection.getInputStream();
+//                    outputStream = new FileOutputStream(file);
+//
+//                    byte data[] = new byte[4096];
+//                    int count;
+//                    while ((count = inputStream.read(data)) != -1) {
+//                        // allow canceling with back button
+//                        if (isCancelled()) {
+//                            inputStream.close();
+//                            return null;
+//                        }
+//                        // publishing the progress....
+//                        publishProgress(i+1);
+//                        outputStream.write(data, 0, count);
+//                    }
+//                }
+                URL url= new URL(strings[0]);
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.connect();
+                if (httpURLConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    return "Server returned HTTP " + httpURLConnection.getResponseCode()
+                            + " " + httpURLConnection.getResponseMessage();
+                }
+                int fileLength = httpURLConnection.getContentLength();
+                File path = Environment.getExternalStoragePublicDirectory(strings[1]);
+                path.mkdir();
+                File file = new File(path, strings[2]);
+                // download the file
+                inputStream = httpURLConnection.getInputStream();
+                outputStream = new FileOutputStream(file);
+
+                byte data[] = new byte[4096];
+                long total = 0;
+                int count;
+                while ((count = inputStream.read(data)) != -1) {
+                    total += count;
+                    if (fileLength > 0) // only if total length is known
+                        publishProgress((int) (total * 100 / fileLength));
+                    outputStream.write(data, 0, count);
+                }
+            }catch (Exception e) {
+                return e.toString();
+            } finally {
+                try {
+                    if (outputStream != null)
+                        outputStream.close();
+                    if (inputStream != null)
+                        inputStream.close();
+                } catch (IOException ignored) {
+                }
+
+                if (httpURLConnection != null)
+                    httpURLConnection.disconnect();
+            }
+
+//            BaiHat baiHat = new BaiHat();
+//            baiHat.setTenBaiHat(strings[1]);
+//            baiHat.setLinkBaiHat(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Temp/"+strings[1]+".mp3");
+////            baiHat.setCaSi(strings[3]);
+//
+//            MainActivity.arrOfflineSong.add(0, baiHat);
+
+            return null;
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // take CPU lock to prevent CPU from going off if the user
+            // presses the power button during download
+//            progressDialog = new ProgressDialog(weakActivity.get());
+//            progressDialog.setMessage("A message");
+//            progressDialog.setIndeterminate(true);
+//            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//            progressDialog.setCancelable(false);
+//            progressDialog.show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            // if we get here, length is known, now set indeterminate to false
+//            progressDialog.setIndeterminate(false);
+//            progressDialog.setMax(chapter.chapter_image.size());
+//            progressDialog.setProgress(progress[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+//            progressDialog.dismiss();
+        }
+    }
+
 }

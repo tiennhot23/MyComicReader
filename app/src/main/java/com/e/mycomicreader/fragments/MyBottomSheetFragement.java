@@ -9,9 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.e.mycomicreader.Common.IRecylerClickListener;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.adapters.DetailComicAdapter;
 import com.e.mycomicreader.models.Chapter;
+import com.e.mycomicreader.models.DetailComic;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.jetbrains.annotations.NotNull;
@@ -21,13 +23,17 @@ import java.util.List;
 public class MyBottomSheetFragement extends BottomSheetDialogFragment {
     Context context;
     List<Chapter> chapter_list;
+    DetailComic detailComic;
+    IRecylerClickListener recylerClickListener;
 
     public MyBottomSheetFragement() {
     }
 
-    public MyBottomSheetFragement(Context context, List<Chapter> chapter_list) {
+    public MyBottomSheetFragement(Context context, List<Chapter> chapter_list, DetailComic detailComic, IRecylerClickListener recylerClickListener) {
         this.context = context;
         this.chapter_list = chapter_list;
+        this.detailComic = detailComic;
+        this.recylerClickListener = recylerClickListener;
     }
 
     @NonNull
@@ -41,7 +47,7 @@ public class MyBottomSheetFragement extends BottomSheetDialogFragment {
 
         RecyclerView recyclerView = bottomSheetView.findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setAdapter(new DetailComicAdapter(context,chapter_list));
+        recyclerView.setAdapter(new DetailComicAdapter(context,chapter_list, detailComic, recylerClickListener));
         return bottomSheetDialog;
     }
 }
