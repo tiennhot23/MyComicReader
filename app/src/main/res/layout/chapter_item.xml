@@ -11,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
-            android:id="@+id/btn_download"
+            android:id="@+id/btn_check"
             android:layout_margin="5dp"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_download"
+            android:src="@drawable/ic_uncheck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         </ImageView>
@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:layout_toStartOf="@+id/btn_download"
+            android:layout_toStartOf="@+id/btn_check"
             android:text="2021-1-1"
             android:textSize="20sp">
 

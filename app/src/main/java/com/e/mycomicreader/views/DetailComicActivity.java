@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.e.mycomicreader.Common.AsyncTaskResponse;
 import com.e.mycomicreader.Common.Common;
-import com.e.mycomicreader.Common.IRecylerClickListener;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.Retrofit.IComicAPI;
 import com.e.mycomicreader.entity.FollowedComic;
@@ -36,12 +35,9 @@ import io.reactivex.schedulers.Schedulers;
 
 import java.io.*;
 import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
-public class DetailComicActivity extends AppCompatActivity implements AsyncTaskResponse, IRecylerClickListener {
+public class DetailComicActivity extends AppCompatActivity implements AsyncTaskResponse{
 
     public static String endpoint;
     private TextView title_comic, author, status, rating, updated_on, genre, view, desc, read, read_continue, chapter_list, btn_follow;
@@ -186,7 +182,7 @@ public class DetailComicActivity extends AppCompatActivity implements AsyncTaskR
     }
 
     private void showBottomSheet(){
-        bottomSheetDialog = new MyBottomSheetFragement(getBaseContext(), detailComic.chapter_list, detailComic, this);
+        bottomSheetDialog = new MyBottomSheetFragement(getBaseContext(), detailComic.chapter_list, detailComic);
     }
 
 
@@ -215,10 +211,10 @@ public class DetailComicActivity extends AppCompatActivity implements AsyncTaskR
         }
     }
 
-    @Override
-    public void onItemClick(int position) {
-        List<String> chapter_image = new ArrayList<>();
-        saveText(detailComic.desc, "", "desc");
+//    @Override
+//    public void onItemClick(int position) {
+//        List<String> chapter_image = new ArrayList<>();
+//        saveText(detailComic.desc, "", "desc");
 //        fetchChapter(position);
 //        progressDialog.setMessage("A message");
 //        progressDialog.setIndeterminate(true);
@@ -249,53 +245,9 @@ public class DetailComicActivity extends AppCompatActivity implements AsyncTaskR
 //        }else{
 //            Toast.makeText(this, "Chap này đã được tải", Toast.LENGTH_SHORT).show();
 //        }
-    }
-
-    private void fetchChapter(int position) {
-        progressDialog.setMessage("A message");
-        progressDialog.setIndeterminate(true);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        compositeDisposable.add(iComicAPI.getChapter(detailComic.chapter_list.get(position).chapter_endpoint)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<Chapter>>() {
-                    @Override
-                    public void accept(List<Chapter> chapter) throws Exception {
-                        progressDialog.setMax(chapter.get(0).chapter_image.size()+2);
-
-                        File file = new File(Environment.getExternalStoragePublicDirectory("/Download comic/"+detailComic.title), "/"+detailComic.chapter_list.get(position).chapter_title);
-                        File parent = new File(Environment.getExternalStoragePublicDirectory("/Download comic"), "/"+detailComic.title);
-                        if(!parent.exists()){
-                            parent.mkdirs();
-                            DownloadTask downloadThemeTask = new DownloadTask();
-                            String path = "/Download comic/"+detailComic.title+"/info";
-                            String fileName = "/theme.jpg";
-                            String res = downloadThemeTask.execute(detailComic.theme, path, fileName).get();
-                            System.out.println(res);
-                            DownloadTask downloadThumbTask = new DownloadTask();
-                            path = "/Download comic/"+detailComic.title+"/info";
-                            fileName = "/thumb.jpg";
-                            res = downloadThumbTask.execute(detailComic.thumb, path, fileName).get();
-                            System.out.println(res);
+//    }
 
 
-                        }
-//                        if(!file.exists()){
-//                            file.mkdirs();
-//                            String fileName;
-//                            String path = "/Download comic/"+detailComic.title+"/"+detailComic.chapter_list.get(position).chapter_title;
-//                            for(int i=0; i<chapter.get(0).chapter_image.size(); i++){
-//                                fileName = "/"+i+".jpg";
-//                                downloadTask.execute(detailComic.theme, path, fileName);
-//                            }
-//                        }else{
-//                            Toast.makeText(getBaseContext(), "Chap này đã được tải", Toast.LENGTH_SHORT).show();
-//                        }
-                    }
-                }));
-    }
 
     private static class BackGroundTask extends AsyncTask<Void, Void, String> {
 
@@ -338,76 +290,7 @@ public class DetailComicActivity extends AppCompatActivity implements AsyncTaskR
     }
 
 
-    private static class DownloadTask extends AsyncTask<String, Integer, String> {
-        //Prevent leak
 
-        private AsyncTaskResponse res = null;
-
-        public DownloadTask() {
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            InputStream inputStream = null;
-            OutputStream outputStream = null;
-            HttpURLConnection httpURLConnection = null;
-            try{
-                URL url= new URL(strings[0]);
-                httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.connect();
-                if (httpURLConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    return "Server returned HTTP " + httpURLConnection.getResponseCode()
-                            + " " + httpURLConnection.getResponseMessage();
-                }
-                int fileLength = httpURLConnection.getContentLength();
-                File path = Environment.getExternalStoragePublicDirectory(strings[1]);
-                path.mkdir();
-                File file = new File(path, strings[2]);
-                // download the file
-                inputStream = httpURLConnection.getInputStream();
-                outputStream = new FileOutputStream(file);
-
-                byte data[] = new byte[4096];
-                long total = 0;
-                int count;
-                while ((count = inputStream.read(data)) != -1) {
-                    total += count;
-                    if (fileLength > 0) // only if total length is known
-                        publishProgress((int) (total * 100 / fileLength));
-                    outputStream.write(data, 0, count);
-                }
-            }catch (Exception e) {
-                return e.toString();
-            } finally {
-                try {
-                    if (outputStream != null)
-                        outputStream.close();
-                    if (inputStream != null)
-                        inputStream.close();
-                } catch (IOException ignored) {
-                }
-
-                if (httpURLConnection != null)
-                    httpURLConnection.disconnect();
-            }
-
-//            BaiHat baiHat = new BaiHat();
-//            baiHat.setTenBaiHat(strings[1]);
-//            baiHat.setLinkBaiHat(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Temp/"+strings[1]+".mp3");
-////            baiHat.setCaSi(strings[3]);
-//
-//            MainActivity.arrOfflineSong.add(0, baiHat);
-
-            String result = "finish";
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-//            res.downloadFinish(result);
-            this.cancel(true);
-        }
-    }
 
     private void downloadImage(String url, String path, String filename){
         try{

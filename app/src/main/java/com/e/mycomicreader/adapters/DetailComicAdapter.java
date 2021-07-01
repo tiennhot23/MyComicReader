@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.e.mycomicreader.Common.IRecylerClickListener;
@@ -15,7 +14,6 @@ import com.e.mycomicreader.R;
 import com.e.mycomicreader.models.Chapter;
 import com.e.mycomicreader.models.DetailComic;
 import com.e.mycomicreader.views.ChapterActivity;
-import com.e.mycomicreader.views.MainActivity;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -58,12 +56,15 @@ public class DetailComicAdapter extends RecyclerView.Adapter<DetailComicAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView chapter_title, chapter_uploaded;
-        ImageView btn_download;
+        ImageView btn_check;
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             chapter_title = itemView.findViewById(R.id.chapter_title);
             chapter_uploaded = itemView.findViewById(R.id.chapter_uploaded);
-            btn_download = itemView.findViewById(R.id.btn_download);
+            btn_check = itemView.findViewById(R.id.btn_check);
+            btn_check.setTag(R.drawable.ic_uncheck);
+
+            int uncheck_id = (int) btn_check.getTag();
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -75,14 +76,18 @@ public class DetailComicAdapter extends RecyclerView.Adapter<DetailComicAdapter.
                 }
             });
 
-            btn_download.setOnClickListener(new View.OnClickListener() {
+            btn_check.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!MainActivity.isWritePermission){
-                        Toast.makeText(context, "Write permission denied", Toast.LENGTH_SHORT).show();
-                        return;
+                    if(((int) btn_check.getTag()) == uncheck_id){
+                        btn_check.setImageResource(R.drawable.ic_check);
+                        btn_check.setTag(R.drawable.ic_check);
+                        recylerClickListener.onCheckBoxClick(getBindingAdapterPosition(), "check");
+                    }else{
+                        btn_check.setImageResource(R.drawable.ic_uncheck);
+                        btn_check.setTag(R.drawable.ic_uncheck);
+                        recylerClickListener.onCheckBoxClick(getBindingAdapterPosition(), "uncheck");
                     }
-                    recylerClickListener.onItemClick(getBindingAdapterPosition());
 
                 }
             });
