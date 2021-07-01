@@ -177,6 +177,11 @@ public class ChapterActivity extends AppCompatActivity implements AsyncTaskRespo
         }
     }
 
+    @Override
+    public void downloadFinish(String output) {
+
+    }
+
     private static class BackGroundTask extends AsyncTask<Void, Void, String> {
 
         //Prevent leak

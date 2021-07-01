@@ -2,8 +2,11 @@ package com.e.mycomicreader.views;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,6 +38,7 @@ import java.io.*;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DetailComicActivity extends AppCompatActivity implements AsyncTaskResponse, IRecylerClickListener {
@@ -46,11 +50,14 @@ public class DetailComicActivity extends AppCompatActivity implements AsyncTaskR
     private Toast toast;
     private DetailComic detailComic = new DetailComic();
     private String chapter_endpoint;
+    private int taskCount = 0;
+    private Chapter downloadChapter;
 
     IComicAPI iComicAPI;
     MyBottomSheetFragement bottomSheetDialog;
     MarkedChapterViewModel markedChapterViewModel;
     BackGroundTask backGroundTask;
+    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +83,8 @@ public class DetailComicActivity extends AppCompatActivity implements AsyncTaskR
         chapter_list = findViewById(R.id.chapter_list);
         btn_follow = findViewById(R.id.btn_follow);
         btn_go_back = findViewById(R.id.btn_go_back);
+        progressDialog = new ProgressDialog(this);
+        downloadChapter = new Chapter();
 
         markedChapterViewModel = new ViewModelProvider(this).get(MarkedChapterViewModel.class);
 
@@ -195,19 +204,97 @@ public class DetailComicActivity extends AppCompatActivity implements AsyncTaskR
     }
 
     @Override
-    public void onItemClick(int position) {
-        File file = new File(Environment.getExternalStoragePublicDirectory("/Download comic/"+detailComic.title), "/"+detailComic.chapter_list.get(position).chapter_title);
-        if(!file.exists()){
-            File pa = new File(Environment.getExternalStoragePublicDirectory("/Download comic"), "/");
-            if(!pa.exists()) file.mkdirs();
-            file.mkdirs();
-            DownloadTask downloadTask = new DownloadTask(this, detailComic.chapter_list.get(position),detailComic);
-            String path = "/Download comic/"+detailComic.title+"/info";
-            String fileName = "/theme.jpg";
-            downloadTask.execute(detailComic.theme, path, fileName);
-        }else{
-            Toast.makeText(this, "Chap này đã được tải", Toast.LENGTH_SHORT).show();
+    public void downloadFinish(String output) {
+        taskCount += 1;
+        progressDialog.setIndeterminate(false);
+        progressDialog.setProgress(taskCount);
+        if(progressDialog.getProgress() == progressDialog.getMax()){
+            taskCount = 0;
+            Toast.makeText(this, "Finish download", Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
         }
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        List<String> chapter_image = new ArrayList<>();
+        saveText(detailComic.desc, "", "desc");
+//        fetchChapter(position);
+//        progressDialog.setMessage("A message");
+//        progressDialog.setIndeterminate(true);
+//        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//        progressDialog.setCancelable(false);
+//        progressDialog.show();
+//        progressDialog.setMax(detailComic.chapter_list.get(position).chapter_image.size()+2);
+//        DownloadTask downloadTask = new DownloadTask(this, detailComic.chapter_list.get(position),detailComic);
+//        File file = new File(Environment.getExternalStoragePublicDirectory("/Download comic/"+detailComic.title), "/"+detailComic.chapter_list.get(position).chapter_title);
+//        File parent = new File(Environment.getExternalStoragePublicDirectory("/Download comic"), "/"+detailComic.title);
+//        if(!parent.exists()){
+//            parent.mkdirs();
+//            String path = "/Download comic/"+detailComic.title+"/info";
+//            String fileName = "/theme.jpg";
+//            downloadTask.execute(detailComic.theme, path, fileName);
+//            path = "/Download comic/"+detailComic.title+"/info";
+//            fileName = "/thumb.jpg";
+//            downloadTask.execute(detailComic.thumb, path, fileName);
+//        }
+//        if(!file.exists()){
+//            file.mkdirs();
+//            String fileName;
+//            String path = "/Download comic/"+detailComic.title+"/"+detailComic.chapter_list.get(position).chapter_title;
+//            for(int i=0; i<detailComic.chapter_list.get(position).chapter_image.size(); i++){
+//                fileName = "/"+i+".jpg";
+//                downloadTask.execute(detailComic.theme, path, fileName);
+//            }
+//        }else{
+//            Toast.makeText(this, "Chap này đã được tải", Toast.LENGTH_SHORT).show();
+//        }
+    }
+
+    private void fetchChapter(int position) {
+        progressDialog.setMessage("A message");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        compositeDisposable.add(iComicAPI.getChapter(detailComic.chapter_list.get(position).chapter_endpoint)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<Chapter>>() {
+                    @Override
+                    public void accept(List<Chapter> chapter) throws Exception {
+                        progressDialog.setMax(chapter.get(0).chapter_image.size()+2);
+
+                        File file = new File(Environment.getExternalStoragePublicDirectory("/Download comic/"+detailComic.title), "/"+detailComic.chapter_list.get(position).chapter_title);
+                        File parent = new File(Environment.getExternalStoragePublicDirectory("/Download comic"), "/"+detailComic.title);
+                        if(!parent.exists()){
+                            parent.mkdirs();
+                            DownloadTask downloadThemeTask = new DownloadTask();
+                            String path = "/Download comic/"+detailComic.title+"/info";
+                            String fileName = "/theme.jpg";
+                            String res = downloadThemeTask.execute(detailComic.theme, path, fileName).get();
+                            System.out.println(res);
+                            DownloadTask downloadThumbTask = new DownloadTask();
+                            path = "/Download comic/"+detailComic.title+"/info";
+                            fileName = "/thumb.jpg";
+                            res = downloadThumbTask.execute(detailComic.thumb, path, fileName).get();
+                            System.out.println(res);
+
+
+                        }
+//                        if(!file.exists()){
+//                            file.mkdirs();
+//                            String fileName;
+//                            String path = "/Download comic/"+detailComic.title+"/"+detailComic.chapter_list.get(position).chapter_title;
+//                            for(int i=0; i<chapter.get(0).chapter_image.size(); i++){
+//                                fileName = "/"+i+".jpg";
+//                                downloadTask.execute(detailComic.theme, path, fileName);
+//                            }
+//                        }else{
+//                            Toast.makeText(getBaseContext(), "Chap này đã được tải", Toast.LENGTH_SHORT).show();
+//                        }
+                    }
+                }));
     }
 
     private static class BackGroundTask extends AsyncTask<Void, Void, String> {
@@ -253,17 +340,10 @@ public class DetailComicActivity extends AppCompatActivity implements AsyncTaskR
 
     private static class DownloadTask extends AsyncTask<String, Integer, String> {
         //Prevent leak
-        private WeakReference<Activity> weakActivity;
-        private Chapter chapter;
-        private DetailComic detailComic;
-        private ProgressDialog progressDialog;
 
         private AsyncTaskResponse res = null;
 
-        public DownloadTask(Activity activity, Chapter chapter, DetailComic detailComic) {
-            weakActivity = new WeakReference<>(activity);
-            this.chapter = chapter;
-            this.detailComic = detailComic;
+        public DownloadTask() {
         }
 
         @Override
@@ -272,34 +352,6 @@ public class DetailComicActivity extends AppCompatActivity implements AsyncTaskR
             OutputStream outputStream = null;
             HttpURLConnection httpURLConnection = null;
             try{
-//                for(int i=0; i<chapter.chapter_image.size(); i++){
-//                    URL url = new URL(chapter.chapter_image.get(i));
-//                    httpURLConnection = (HttpURLConnection) url.openConnection();
-//                    httpURLConnection.connect();
-//                    if (httpURLConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-//                        return "Server returned HTTP " + httpURLConnection.getResponseCode()
-//                                + " " + httpURLConnection.getResponseMessage();
-//                    }
-//                    File path = Environment.getExternalStoragePublicDirectory("/Download comic/"+detailComic.title+"/"+chapter.chapter_title);
-//                    File file = new File(path, "/"+i+".jpg");
-//                    // download the file
-//                    file.mkdir();
-//                    inputStream = httpURLConnection.getInputStream();
-//                    outputStream = new FileOutputStream(file);
-//
-//                    byte data[] = new byte[4096];
-//                    int count;
-//                    while ((count = inputStream.read(data)) != -1) {
-//                        // allow canceling with back button
-//                        if (isCancelled()) {
-//                            inputStream.close();
-//                            return null;
-//                        }
-//                        // publishing the progress....
-//                        publishProgress(i+1);
-//                        outputStream.write(data, 0, count);
-//                    }
-//                }
                 URL url= new URL(strings[0]);
                 httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.connect();
@@ -346,34 +398,48 @@ public class DetailComicActivity extends AppCompatActivity implements AsyncTaskR
 //
 //            MainActivity.arrOfflineSong.add(0, baiHat);
 
-            return null;
-        }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            // take CPU lock to prevent CPU from going off if the user
-            // presses the power button during download
-//            progressDialog = new ProgressDialog(weakActivity.get());
-//            progressDialog.setMessage("A message");
-//            progressDialog.setIndeterminate(true);
-//            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-//            progressDialog.setCancelable(false);
-//            progressDialog.show();
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-            super.onProgressUpdate(progress);
-            // if we get here, length is known, now set indeterminate to false
-//            progressDialog.setIndeterminate(false);
-//            progressDialog.setMax(chapter.chapter_image.size());
-//            progressDialog.setProgress(progress[0]);
+            String result = "finish";
+            return result;
         }
 
         @Override
         protected void onPostExecute(String result) {
-//            progressDialog.dismiss();
+//            res.downloadFinish(result);
+            this.cancel(true);
         }
+    }
+
+    private void downloadImage(String url, String path, String filename){
+        try{
+            DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+            Uri downloadUri = Uri.parse(url);
+            DownloadManager.Request request = new DownloadManager.Request(downloadUri);
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                    .setAllowedOverRoaming(false)
+                    .setTitle(filename)
+                    .setMimeType("image/jpeg") // Your file type. You can use this code to download other file types also.
+                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,path + File.separator + filename);
+            dm.enqueue(request);
+        }catch (Exception e){
+            Toast.makeText(this, "Image download failed.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void saveText(String data, String path, String fileName){
+        try {
+            File dir = new File(Environment.getExternalStoragePublicDirectory("/Download comic") + path);
+            if(!dir.exists()) dir.mkdirs();
+            File file = new File(dir, "/" + fileName + ".txt");
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(data);
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Write data failed", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 }
