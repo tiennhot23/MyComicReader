@@ -5,8 +5,7 @@ import com.e.mycomicreader.models.Comic;
 import com.e.mycomicreader.models.DetailComic;
 import com.e.mycomicreader.models.Genre;
 import io.reactivex.Observable;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
+import retrofit2.http.*;
 
 import java.util.List;
 
@@ -31,4 +30,12 @@ public interface IComicAPI {
 
     @GET("chapter/{chapter_endpoint}")
     Observable<List<Chapter>> getChapter(@Path("chapter_endpoint")String chapter_endpoint);
+
+    @POST("chapter")
+    @FormUrlEncoded
+    Observable<List<Chapter>> getListChapter(@Field("data") String data);
+
+    @POST("filter_genres")
+    @FormUrlEncoded
+    Observable<List<Comic>> filterGenres(@Field("data") String data);
 }

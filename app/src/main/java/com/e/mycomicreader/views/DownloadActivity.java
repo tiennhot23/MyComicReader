@@ -6,12 +6,13 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.e.mycomicreader.Common.Common;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.Retrofit.IComicAPI;
 import com.e.mycomicreader.models.Chapter;
+import com.google.gson.Gson;
 import dmax.dialog.SpotsDialog;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -59,69 +60,48 @@ public class DownloadActivity extends AppCompatActivity {
 
         dialog = new SpotsDialog.Builder().setContext(this).setMessage("Loading...").build();
         dialog.show();
-        fetchChapter(download_chapters.get(0).chapter_endpoint);
-        Handler handler = new Handler();
-        handler.postDelayed(()->{
-            dialog.dismiss();
-        }, 5000);
-        System.out.println("here");
-
-
-//        File parent = new File(Environment.getExternalStoragePublicDirectory("/Download comic/"), title);
-//        if(!parent.exists()) parent.mkdirs();
-//
-//        int fileLength = 0;
-//        for(int i=0; i<download_chapters.size(); i++){
-//            fileLength += download_chapters.size();
-//        }
-
-//        downloadTask = new DownloadTask(this, title, fileLength);
-//        Chapter[] chapters = new Chapter[download_chapters.size()];
-//        download_chapters.toArray(chapters);
-//        downloadTask.execute(chapters);
+        fetchListChapter(download_chapters);
     }
 
-    private void fetchChapter(String chapter_enpoint) {
-        compositeDisposable.addAll(iComicAPI.getChapter(chapter_enpoint)
+    private void fetchListChapter(List<Chapter> download_chapters) {
+        List<String> chapter_endpoints = new ArrayList<>();
+        for(int i=0 ;i<download_chapters.size(); i++){
+            chapter_endpoints.add(download_chapters.get(i).chapter_endpoint);
+        }
+        String data = new Gson().toJson(chapter_endpoints);
+        compositeDisposable.add(iComicAPI.getListChapter(data)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<Chapter>>() {
                     @Override
-                    public void accept(List<Chapter> chapter) throws Exception {
-                        System.out.println(1);
-                        total+=1;
+                    public void accept(List<Chapter> chapters) throws Exception {
+                        download_chapters.clear();
+                        download_chapters.addAll(chapters);
+                        dialog.dismiss();
+                        download();
                     }
-                }),
-                iComicAPI.getChapter(chapter_enpoint)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Consumer<List<Chapter>>() {
-                            @Override
-                            public void accept(List<Chapter> chapter) throws Exception {
-                                System.out.println(2);
-                                total+=1;
-                            }
-                        }),
-                iComicAPI.getChapter(chapter_enpoint)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Consumer<List<Chapter>>() {
-                            @Override
-                            public void accept(List<Chapter> chapter) throws Exception {
-                                System.out.println(3);
-                                total+=1;
-                            }
-                        }),
-                iComicAPI.getChapter(chapter_enpoint)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Consumer<List<Chapter>>() {
-                            @Override
-                            public void accept(List<Chapter> chapter) throws Exception {
-                                System.out.println(4);
-                                total+=1;
-                            }
-                        }));
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        System.out.println(throwable);
+                    }
+                }));
+    }
+
+
+    private void download(){
+        File parent = new File(Environment.getExternalStoragePublicDirectory("/Download comic/"), title);
+        if(!parent.exists()) parent.mkdirs();
+
+        int fileLength = 0;
+        for(int i=0; i<download_chapters.size(); i++){
+            fileLength += download_chapters.get(i).chapter_image.size();
+        }
+
+        downloadTask = new DownloadTask(this, title, fileLength);
+        Chapter[] chapters = new Chapter[download_chapters.size()];
+        download_chapters.toArray(chapters);
+        downloadTask.execute(chapters);
     }
 
 
@@ -166,6 +146,11 @@ public class DownloadActivity extends AppCompatActivity {
                 for(Chapter chapter : chapters){
                     File path = Environment.getExternalStoragePublicDirectory("/Download comic/" + title +"/"+ chapter.chapter_title);
                     if(!path.exists()) path.mkdirs();
+                    else{
+                        total += 1;
+                        publishProgress(total);
+                        return null;
+                    }
                     for(int i=0; i<chapter.chapter_image.size(); i++){
                         URL url = new URL(chapter.chapter_image.get(i));
                         httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -180,13 +165,20 @@ public class DownloadActivity extends AppCompatActivity {
 
                         byte data[] = new byte[4096];
                         int count;
+//                        int fileLength = httpURLConnection.getContentLength();
+//                        long total = 0;
                         while ((count = inputStream.read(data)) != -1) {
-                            total += 1;
-                            publishProgress(total);
+//                            total += count;
+//                            if (fileLength > 0) // only if total length is known
+//                                publishProgress((int) (total * 100 / fileLength));
                             outputStream.write(data, 0, count);
                         }
+
                         try {
                             if (outputStream != null){
+                                total += 1;
+                                System.out.println(total);
+                                publishProgress(total);
                                 outputStream.flush();
                             }
                             if (outputStream != null){
@@ -227,6 +219,8 @@ public class DownloadActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             if(progressDialog.isShowing()) progressDialog.dismiss();
             this.cancel(true);
+            Toast.makeText(activity.get(), "Download finished", Toast.LENGTH_SHORT).show();
+            activity.get().finish();
         }
     }
 }
