@@ -2,7 +2,10 @@ package com.e.mycomicreader.views;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -90,8 +93,17 @@ public class DownloadActivity extends AppCompatActivity {
 
 
     private void download(){
-        File parent = new File(Environment.getExternalStoragePublicDirectory("/Download comic/"), title);
-        if(!parent.exists()) parent.mkdirs();
+        File parent = new File(Environment.getExternalStoragePublicDirectory("/Download/Download comic/"), title);
+        if(!parent.exists()){
+            parent.mkdirs();
+            File info = new File(Environment.getExternalStoragePublicDirectory("/Download/Download comic/"), title + "/info");
+            info.mkdirs();
+            downloadImage(theme, "/Download comic/" + title + "/info", "theme");
+            downloadImage(thumb, "/Download comic/" + title + "/info", "thumb");
+            saveText(title, "/Download comic/" + title + "/info", "title");
+            saveText(desc, "/Download comic/" + title + "/info", "desc");
+            saveText(genre, "/Download comic/" + title + "/info", "genre");
+        }
 
         int fileLength = 0;
         for(int i=0; i<download_chapters.size(); i++){
@@ -144,7 +156,7 @@ public class DownloadActivity extends AppCompatActivity {
             HttpURLConnection httpURLConnection = null;
             try{
                 for(Chapter chapter : chapters){
-                    File path = Environment.getExternalStoragePublicDirectory("/Download comic/" + title +"/"+ chapter.chapter_title);
+                    File path = Environment.getExternalStoragePublicDirectory("/Download/Download comic/" + title +"/"+ chapter.chapter_title);
                     if(!path.exists()) path.mkdirs();
                     else{
                         total += 1;
@@ -165,12 +177,7 @@ public class DownloadActivity extends AppCompatActivity {
 
                         byte data[] = new byte[4096];
                         int count;
-//                        int fileLength = httpURLConnection.getContentLength();
-//                        long total = 0;
                         while ((count = inputStream.read(data)) != -1) {
-//                            total += count;
-//                            if (fileLength > 0) // only if total length is known
-//                                publishProgress((int) (total * 100 / fileLength));
                             outputStream.write(data, 0, count);
                         }
 
@@ -222,5 +229,39 @@ public class DownloadActivity extends AppCompatActivity {
             Toast.makeText(activity.get(), "Download finished", Toast.LENGTH_SHORT).show();
             activity.get().finish();
         }
+    }
+
+
+    private void downloadImage(String url, String path, String filename){
+        try{
+            DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+            Uri downloadUri = Uri.parse(url);
+            DownloadManager.Request request = new DownloadManager.Request(downloadUri);
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                    .setAllowedOverRoaming(false)
+                    .setTitle(filename)
+                    .setMimeType("image/jpeg") // Your file type. You can use this code to download other file types also.
+                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,path + File.separator + filename + ".jpg");
+            dm.enqueue(request);
+        }catch (Exception e){
+            Toast.makeText(this, "Image download failed.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void saveText(String data, String path, String fileName){
+        try {
+            File dir = new File(Environment.getExternalStoragePublicDirectory("/Download") + path);
+            if(!dir.exists()) dir.mkdirs();
+            File file = new File(dir, "/" + fileName + ".txt");
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(data);
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Write data failed", Toast.LENGTH_SHORT).show();
+        }
+
     }
 }

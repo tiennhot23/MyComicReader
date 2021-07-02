@@ -2,14 +2,10 @@ package com.e.mycomicreader.views;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DownloadManager;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,7 +29,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-import java.io.*;
+import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -290,39 +286,5 @@ public class DetailComicActivity extends AppCompatActivity implements AsyncTaskR
     }
 
 
-
-
-    private void downloadImage(String url, String path, String filename){
-        try{
-            DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-            Uri downloadUri = Uri.parse(url);
-            DownloadManager.Request request = new DownloadManager.Request(downloadUri);
-            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                    .setAllowedOverRoaming(false)
-                    .setTitle(filename)
-                    .setMimeType("image/jpeg") // Your file type. You can use this code to download other file types also.
-                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,path + File.separator + filename);
-            dm.enqueue(request);
-        }catch (Exception e){
-            Toast.makeText(this, "Image download failed.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void saveText(String data, String path, String fileName){
-        try {
-            File dir = new File(Environment.getExternalStoragePublicDirectory("/Download comic") + path);
-            if(!dir.exists()) dir.mkdirs();
-            File file = new File(dir, "/" + fileName + ".txt");
-            FileWriter fw = new FileWriter(file.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(data);
-            bw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Write data failed", Toast.LENGTH_SHORT).show();
-        }
-
-    }
 
 }
