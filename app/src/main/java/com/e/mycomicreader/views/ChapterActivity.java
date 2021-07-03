@@ -11,8 +11,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 import com.e.mycomicreader.Common.AsyncTaskResponse;
 import com.e.mycomicreader.Common.Common;
 import com.e.mycomicreader.R;
@@ -35,7 +34,7 @@ import java.util.List;
 public class ChapterActivity extends AppCompatActivity implements AsyncTaskResponse{
     private CompositeDisposable compositeDisposable;
     IComicAPI iComicAPI;
-    private RecyclerView recycler;
+    private ViewPager2 viewPager;
     private int position;
     private List<Chapter> chapter_list;
     private String chapter_endpoint, endpoint;
@@ -54,12 +53,11 @@ public class ChapterActivity extends AppCompatActivity implements AsyncTaskRespo
         position = getIntent().getIntExtra("position", 0);
         chapter_list = (List<Chapter>) getIntent().getSerializableExtra("chapter_list");
         chapter_endpoint = chapter_list.get(position).chapter_endpoint;
-        recycler = findViewById(R.id.recycler);
+        viewPager = findViewById(R.id.view_pager);
         more = findViewById(R.id.more);
         next = findViewById(R.id.next);
         prev = findViewById(R.id.previous);
         beenhere = findViewById(R.id.beenhere);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
         compositeDisposable = new CompositeDisposable();
         iComicAPI = Common.getAPI();
         markedChapterViewModel = new ViewModelProvider(this).get(MarkedChapterViewModel.class);
@@ -79,7 +77,7 @@ public class ChapterActivity extends AppCompatActivity implements AsyncTaskRespo
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(position - 1 < 1){
+                if(position - 1 < 0){
                     return;
                 }
                 Intent intent = new Intent(ChapterActivity.this, ChapterActivity.class);
@@ -130,7 +128,7 @@ public class ChapterActivity extends AppCompatActivity implements AsyncTaskRespo
                 .subscribe(new Consumer<List<Chapter>>() {
                     @Override
                     public void accept(List<Chapter> chapter) throws Exception {
-                        recycler.setAdapter(new ChapterAdapter(getApplication().getBaseContext(), chapter.get(0).chapter_image));
+                        viewPager.setAdapter(new ChapterAdapter(getApplication().getBaseContext(), chapter.get(0).chapter_image));
                         dialog.dismiss();
                     }
                 }));

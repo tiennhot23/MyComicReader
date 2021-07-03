@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.ChapterActivity"
+    tools:context=".views.OfflineChapterActivity"
     android:background="@color/black">
 
     <androidx.viewpager2.widget.ViewPager2
@@ -59,19 +59,5 @@
 
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/beenhere"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@color/black"
-        android:src="@drawable/ic_beenhere"
-        app:backgroundTint="#000000"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="@+id/previous"
-        app:layout_constraintTop_toBottomOf="@+id/previous"
-        app:rippleColor="#FFFFFF">
-
-    </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

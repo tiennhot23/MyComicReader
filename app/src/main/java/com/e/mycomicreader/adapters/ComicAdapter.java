@@ -49,6 +49,9 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>{
         else
             holder.btn_follow.setImageResource(R.drawable.ic_mark);
         holder.btn_follow.setTag(position);
+        holder.title_comic.setText(comics.get(position).title);
+        holder.rating.setText(comics.get(position).rating);
+        holder.title_chapter.setText(comics.get(position).chapter);
     }
 
     @Override

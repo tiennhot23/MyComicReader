@@ -14,8 +14,10 @@ import com.e.mycomicreader.R;
 import com.e.mycomicreader.models.Chapter;
 import com.e.mycomicreader.models.DetailComic;
 import com.e.mycomicreader.views.ChapterActivity;
+import com.e.mycomicreader.views.OfflineChapterActivity;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
@@ -24,6 +26,8 @@ public class DetailComicAdapter extends RecyclerView.Adapter<DetailComicAdapter.
     List<Chapter> chapter_list;
     DetailComic detailComic;
     IRecylerClickListener recylerClickListener;
+    List<File> files;
+    Boolean offline = false;
 
     public DetailComicAdapter() {
     }
@@ -33,6 +37,14 @@ public class DetailComicAdapter extends RecyclerView.Adapter<DetailComicAdapter.
         this.chapter_list = chapter_list;
         this.detailComic = detailComic;
         this.recylerClickListener = recylerClickListener;
+        offline = false;
+    }
+
+    public DetailComicAdapter(Context context, List<File> files, IRecylerClickListener recylerClickListener) {
+        this.context = context;
+        this.files = files;
+        this.recylerClickListener = recylerClickListener;
+        offline = true;
     }
 
     @NonNull
@@ -45,13 +57,21 @@ public class DetailComicAdapter extends RecyclerView.Adapter<DetailComicAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
-        holder.chapter_title.setText(chapter_list.get(position).chapter_title);
-        holder.chapter_uploaded.setText(chapter_list.get(position).chapter_uploaded);
+        if(offline){
+            holder.chapter_uploaded.setText("");
+            holder.chapter_title.setText(files.get(position).getName());
+        }else{
+            holder.chapter_title.setText(chapter_list.get(position).chapter_title);
+            holder.chapter_uploaded.setText(chapter_list.get(position).chapter_uploaded);
+        }
+        holder.btn_check.setImageResource(R.drawable.ic_uncheck);
+        holder.btn_check.setTag(R.drawable.ic_uncheck);
     }
 
     @Override
     public int getItemCount() {
-        return chapter_list.size();
+        if(offline) return files.size();
+        else return chapter_list.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -69,10 +89,17 @@ public class DetailComicAdapter extends RecyclerView.Adapter<DetailComicAdapter.
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, ChapterActivity.class);
-                    intent.putExtra("position", getBindingAdapterPosition());
-                    intent.putExtra("chapter_list", (Serializable) chapter_list);
-                    context.startActivity(intent);
+                    if(offline){
+                        Intent intent = new Intent(context, OfflineChapterActivity.class);
+                        intent.putExtra("position", getBindingAdapterPosition());
+                        intent.putExtra("list_file", (Serializable) files);
+                        context.startActivity(intent);
+                    }else{
+                        Intent intent = new Intent(context, ChapterActivity.class);
+                        intent.putExtra("position", getBindingAdapterPosition());
+                        intent.putExtra("chapter_list", (Serializable) chapter_list);
+                        context.startActivity(intent);
+                    }
                 }
             });
 

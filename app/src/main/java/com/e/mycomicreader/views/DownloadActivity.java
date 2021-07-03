@@ -157,47 +157,49 @@ public class DownloadActivity extends AppCompatActivity {
             try{
                 for(Chapter chapter : chapters){
                     File path = Environment.getExternalStoragePublicDirectory("/Download/Download comic/" + title +"/"+ chapter.chapter_title);
-                    if(!path.exists()) path.mkdirs();
+                    if(!path.exists()){
+                        path.mkdirs();
+                        for(int i=0; i<chapter.chapter_image.size(); i++){
+                            URL url = new URL(chapter.chapter_image.get(i));
+                            httpURLConnection = (HttpURLConnection) url.openConnection();
+                            httpURLConnection.connect();
+                            if (httpURLConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                                return "Server returned HTTP " + httpURLConnection.getResponseCode()
+                                        + " " + httpURLConnection.getResponseMessage();
+                            }
+                            File file = new File(path, "/" + i + ".jpg");
+                            inputStream = httpURLConnection.getInputStream();
+                            outputStream = new FileOutputStream(file);
+
+                            byte data[] = new byte[4096];
+                            int count;
+                            while ((count = inputStream.read(data)) != -1) {
+                                outputStream.write(data, 0, count);
+                            }
+
+                            try {
+                                if (outputStream != null){
+                                    total += 1;
+                                    System.out.println(total);
+                                    publishProgress(total);
+                                    outputStream.flush();
+                                }
+                                if (outputStream != null){
+                                    outputStream.close();
+                                }
+                                if (inputStream != null)
+                                    inputStream.close();
+                            } catch (IOException ignored) {
+                            }
+                            if (httpURLConnection != null)
+                                httpURLConnection.disconnect();
+                        }
+                    }
                     else{
                         total += 1;
                         publishProgress(total);
-                        return null;
                     }
-                    for(int i=0; i<chapter.chapter_image.size(); i++){
-                        URL url = new URL(chapter.chapter_image.get(i));
-                        httpURLConnection = (HttpURLConnection) url.openConnection();
-                        httpURLConnection.connect();
-                        if (httpURLConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                            return "Server returned HTTP " + httpURLConnection.getResponseCode()
-                                    + " " + httpURLConnection.getResponseMessage();
-                        }
-                        File file = new File(path, "/" + i + ".jpg");
-                        inputStream = httpURLConnection.getInputStream();
-                        outputStream = new FileOutputStream(file);
 
-                        byte data[] = new byte[4096];
-                        int count;
-                        while ((count = inputStream.read(data)) != -1) {
-                            outputStream.write(data, 0, count);
-                        }
-
-                        try {
-                            if (outputStream != null){
-                                total += 1;
-                                System.out.println(total);
-                                publishProgress(total);
-                                outputStream.flush();
-                            }
-                            if (outputStream != null){
-                                outputStream.close();
-                            }
-                            if (inputStream != null)
-                                inputStream.close();
-                        } catch (IOException ignored) {
-                        }
-                        if (httpURLConnection != null)
-                            httpURLConnection.disconnect();
-                    }
                 }
             }catch (Exception e) {
                 return e.toString();

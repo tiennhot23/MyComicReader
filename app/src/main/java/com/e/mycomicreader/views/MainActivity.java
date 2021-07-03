@@ -95,6 +95,7 @@ public class MainActivity extends FragmentActivity {
                 .subscribe(new Consumer<List<Comic>>() {
                     @Override
                     public void accept(List<Comic> comic) throws Exception {
+                        if(comics != null) comics.clear();
                         comics.addAll(comic);
                         fetchFollowedComic();
                         dialog.dismiss();

@@ -7,26 +7,26 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import com.e.mycomicreader.R;
-import com.e.mycomicreader.models.Comic;
+import com.e.mycomicreader.fragments.MyBottomSheetFragement;
 import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
 
 public class ComicAdapter2 extends RecyclerView.Adapter<ComicAdapter2.ViewHolder>{
 
     Context context;
-    List<Comic> comics = new ArrayList<>();
-
+    File[] files;
+    MyBottomSheetFragement bottomSheetFragement;
     public ComicAdapter2() {
     }
 
-    public ComicAdapter2(Context context, List<Comic> comics) {
+    public ComicAdapter2(Context context, File[] files) {
         this.context = context;
-        this.comics = comics;
+        this.files = files;
     }
 
     @NotNull
@@ -38,18 +38,41 @@ public class ComicAdapter2 extends RecyclerView.Adapter<ComicAdapter2.ViewHolder
 
     @Override
     public void onBindViewHolder(@NotNull ComicAdapter2.ViewHolder holder, int position) {
+        File thumbFile = new File(files[position].getAbsolutePath() + "/info/thumb.jpg");
+        File themeFile = new File(files[position].getAbsolutePath() + "/info/theme.jpg");
         if((position + 1)/2 == 0){
-            Picasso.get().load(comics.get(position).thumb).into(holder.thumb);
+            Picasso.get().load(thumbFile).into(holder.thumb);
         }else{
-            Picasso.get().load(comics.get(position).thumb).into(holder.thumb2);
+            Picasso.get().load(thumbFile).into(holder.thumb2);
         }
+        Picasso.get().load(themeFile).into(holder.background);
 
-        Picasso.get().load(comics.get(position).thumb).into(holder.background);
+        File genreFile = new File(files[position].getAbsolutePath() + "/info/genre.txt");
+        File descFile = new File(files[position].getAbsolutePath() + "/info/desc.txt");
+        File titleFile = new File(files[position].getAbsolutePath() + "/info/title.txt");
+
+        try {
+            String genre = null;
+            BufferedReader br = new BufferedReader(new FileReader(genreFile));
+            genre = br.readLine();
+            holder.genres.setText(genre);
+            String desc = null;
+            br = new BufferedReader(new FileReader(descFile));
+            desc = br.readLine();
+            holder.desc.setText(desc);
+            String title = null;
+            br = new BufferedReader(new FileReader(titleFile));
+            title = br.readLine();
+            holder.title_comic.setText(title);
+        } catch (IOException e) {
+            Toast.makeText(context, "error while reading file", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public int getItemCount() {
-        return comics.size();
+        if(files == null) return 0;
+        return files.length;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -67,7 +90,13 @@ public class ComicAdapter2 extends RecyclerView.Adapter<ComicAdapter2.ViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    bottomSheetFragement = new MyBottomSheetFragement(context, files[getBindingAdapterPosition()].listFiles(new FilenameFilter() {
+                        @Override
+                        public boolean accept(File dir, String name) {
+                            return !name.equals("info");
+                        }
+                    }));
+                    bottomSheetFragement.show(((FragmentActivity)context).getSupportFragmentManager(), bottomSheetFragement.getTag());
                 }
             } );
 

@@ -207,44 +207,6 @@ public class DetailComicActivity extends AppCompatActivity implements AsyncTaskR
         }
     }
 
-//    @Override
-//    public void onItemClick(int position) {
-//        List<String> chapter_image = new ArrayList<>();
-//        saveText(detailComic.desc, "", "desc");
-//        fetchChapter(position);
-//        progressDialog.setMessage("A message");
-//        progressDialog.setIndeterminate(true);
-//        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-//        progressDialog.setCancelable(false);
-//        progressDialog.show();
-//        progressDialog.setMax(detailComic.chapter_list.get(position).chapter_image.size()+2);
-//        DownloadTask downloadTask = new DownloadTask(this, detailComic.chapter_list.get(position),detailComic);
-//        File file = new File(Environment.getExternalStoragePublicDirectory("/Download comic/"+detailComic.title), "/"+detailComic.chapter_list.get(position).chapter_title);
-//        File parent = new File(Environment.getExternalStoragePublicDirectory("/Download comic"), "/"+detailComic.title);
-//        if(!parent.exists()){
-//            parent.mkdirs();
-//            String path = "/Download comic/"+detailComic.title+"/info";
-//            String fileName = "/theme.jpg";
-//            downloadTask.execute(detailComic.theme, path, fileName);
-//            path = "/Download comic/"+detailComic.title+"/info";
-//            fileName = "/thumb.jpg";
-//            downloadTask.execute(detailComic.thumb, path, fileName);
-//        }
-//        if(!file.exists()){
-//            file.mkdirs();
-//            String fileName;
-//            String path = "/Download comic/"+detailComic.title+"/"+detailComic.chapter_list.get(position).chapter_title;
-//            for(int i=0; i<detailComic.chapter_list.get(position).chapter_image.size(); i++){
-//                fileName = "/"+i+".jpg";
-//                downloadTask.execute(detailComic.theme, path, fileName);
-//            }
-//        }else{
-//            Toast.makeText(this, "Chap này đã được tải", Toast.LENGTH_SHORT).show();
-//        }
-//    }
-
-
-
     private static class BackGroundTask extends AsyncTask<Void, Void, String> {
 
         //Prevent leak

@@ -1,6 +1,7 @@
 package com.e.mycomicreader.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.entity.FollowedComic;
 import com.e.mycomicreader.models.Comic;
+import com.e.mycomicreader.views.DetailComicActivity;
 import com.e.mycomicreader.views.MainActivity;
 import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
@@ -48,6 +50,15 @@ public class ComicAdapter3 extends RecyclerView.Adapter<ComicAdapter3.ViewHolder
         else
             holder.btn_follow.setImageResource(R.drawable.ic_mark);
         holder.btn_follow.setTag(position);
+        holder.title_comic.setText(comics.get(position).title);
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<comics.get(position).genre_list.size(); i++){
+            if(i==0) sb.append(comics.get(position).genre_list.get(i).genre_name);
+            else sb.append(", ").append(comics.get(position).genre_list.get(i).genre_name);
+        }
+        holder.genres.setText(sb.toString());
+        holder.rating.setText(comics.get(position).rating);
+        holder.chapter.setText(comics.get(position).chapter);
     }
 
     @Override
@@ -57,21 +68,24 @@ public class ComicAdapter3 extends RecyclerView.Adapter<ComicAdapter3.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         ImageView thumb;
-        TextView title_comic, title_chapter, rating;
+        TextView title_comic, chapter, rating, genres;
         ImageView btn_follow;
         Toast toast = null;
         public ViewHolder(@NotNull View itemView) {
             super(itemView);
             thumb = itemView.findViewById(R.id.thumb);
             title_comic = itemView.findViewById(R.id.title_comic);
-            title_chapter = itemView.findViewById(R.id.title_chapter);
+            chapter = itemView.findViewById(R.id.chapter);
+            genres = itemView.findViewById(R.id.genres);
             rating = itemView.findViewById(R.id.rating);
             btn_follow = itemView.findViewById(R.id.btn_follow);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent = new Intent(context, DetailComicActivity.class);
+                    intent.putExtra("endpoint", comics.get(getBindingAdapterPosition()).endpoint);
+                    context.startActivity(intent);
                 }
             } );
 
