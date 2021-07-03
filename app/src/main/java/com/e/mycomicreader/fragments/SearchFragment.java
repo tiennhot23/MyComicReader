@@ -1,11 +1,15 @@
 package com.e.mycomicreader.fragments;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
@@ -16,6 +20,7 @@ import com.e.mycomicreader.Common.Common;
 import com.e.mycomicreader.R;
 import com.e.mycomicreader.Retrofit.IComicAPI;
 import com.e.mycomicreader.adapters.ComicAdapter3;
+import com.e.mycomicreader.adapters.GenreAdapter;
 import com.e.mycomicreader.entity.FollowedComic;
 import com.e.mycomicreader.entity.HistorySearch;
 import com.e.mycomicreader.models.Comic;
@@ -29,7 +34,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +46,7 @@ public class SearchFragment  extends Fragment {
     IComicAPI iComicAPI;
     RecyclerView recycler;
     EditText editText;
-    Spinner spn_genre, spn_status;
+    TextView genres;
     ImageView btn_search, btn_filter;
     FlowLayout flowLayout;
     Map<String, String> genre_list = new HashMap<>();
@@ -61,8 +65,7 @@ public class SearchFragment  extends Fragment {
         recycler = this.view.findViewById(R.id.recycler);
         recycler.setLayoutManager(new LinearLayoutManager(this.view.getContext()));
 
-        spn_genre = this.view.findViewById(R.id.spn_genre);
-        spn_status = this.view.findViewById(R.id.spn_status);
+        genres = this.view.findViewById(R.id.genres);
         editText = this.view.findViewById(R.id.edit_text);
         btn_search = this.view.findViewById(R.id.btn_search);
         btn_filter = this.view.findViewById(R.id.btn_filter);
@@ -103,8 +106,9 @@ public class SearchFragment  extends Fragment {
         if(MainActivity.isNetworkAvailable){
 //            fetchSearchComics("");
             recycler.setAdapter(new ComicAdapter3(view.getContext(), MainActivity.comics, MainActivity.isFollowed));
-            fetchGenres();
-            fetchStatus();
+            new Handler().post(() -> {
+                fetchGenres();
+            });
         }
 
         MainActivity.followedComicViewModel.getAll().observe((LifecycleOwner) view.getContext(), new Observer<List<FollowedComic>>() {
@@ -119,8 +123,6 @@ public class SearchFragment  extends Fragment {
             public void onClick(View v) {
                 if(MainActivity.isNetworkAvailable){
                     fetchSearchComics(editText.getText().toString());
-                    spn_genre.setSelection(0);
-                    spn_status.setSelection(0);
                     if(!editText.getText().toString().equals(""))
                         historySearchViewModel.insert(new HistorySearch(editText.getText().toString()));
                 }
@@ -130,39 +132,52 @@ public class SearchFragment  extends Fragment {
         btn_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(MainActivity.isNetworkAvailable){
-                    filter(editText.getText().toString(), spn_genre.getSelectedItem().toString());
-                }
+                showOptionsDialog();
             }
         });
 
         return view;
     }
 
+    private void showOptionsDialog(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(view.getContext());
+        alertDialog.setTitle("Select Genres");
+
+        View filter_layout = LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_option, null);
+        RecyclerView recyclerView = filter_layout.findViewById(R.id.recycler_option);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        GenreAdapter genreAdapter = new GenreAdapter(view.getContext(), Common.genres);
+        recyclerView.setAdapter(genreAdapter);
+
+        alertDialog.setView(filter_layout);
+        alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialog.setPositiveButton("FILTER", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                editText.setText("");
+                genres.setText(genreAdapter.getFilterArray());
+                filter(genreAdapter.getFilterArray());
+            }
+        });
+
+        alertDialog.show();
+    }
+
     private void fetchGenres() {
-        AlertDialog dialog = new SpotsDialog.Builder().setContext(this.view.getContext()).setMessage("Loading...").build();
-        dialog.show();
         compositeDisposable.add(iComicAPI.getGenres()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<Genre>>() {
                     @Override
                     public void accept(List<Genre> genres) throws Exception {
-                        String[] genre_names = new String[genres.size()];
-                        for (int i=0; i<genres.size(); i++) {
-                            genre_names[i] = genres.get(i).genre_name;
-
-                            genre_list.put(genres.get(i).genre_name, genres.get(i).genre_endpoint);
-                        }
-                        ArrayAdapter genreArrayAdapter = new ArrayAdapter(view.getContext(), R.layout.spinner_item, genre_names);
-                        genreArrayAdapter.setDropDownViewResource(R.layout.dropdown_spinner_item);
-                        spn_genre.setAdapter(genreArrayAdapter);
-                        Field popup = Spinner.class.getDeclaredField("mPopup");
-                        popup.setAccessible(true);
-                        ListPopupWindow popupWindow = (ListPopupWindow) popup.get(spn_genre);
-                        popupWindow.setHeight(500);
-
-                        dialog.dismiss();
+                        if(Common.genres != null) Common.genres.clear();
+                        Common.genres.addAll(genres);
                     }
                 }));
     }
@@ -198,56 +213,18 @@ public class SearchFragment  extends Fragment {
 
     }
 
-    private void filter(String query, String genre){
-        if(!query.equals("") && !genre.equals("Tất cả")){
-            AlertDialog dialog = new SpotsDialog.Builder().setContext(this.view.getContext()).setMessage("Loading...").build();
-            dialog.show();
-            compositeDisposable.add(iComicAPI.filterComics(genre_list.get(genre), query)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<List<Comic>>() {
-                        @Override
-                        public void accept(List<Comic> comics) throws Exception {
-                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFollowed));
-                            dialog.dismiss();
-                        }
-                    }));
-        }else if (query.equals("") && genre.equals("Tất cả")){
-            recycler.setAdapter(new ComicAdapter3(view.getContext(), MainActivity.comics, MainActivity.isFollowed));
-        }
-        else if(query.equals("")){
-            AlertDialog dialog = new SpotsDialog.Builder().setContext(this.view.getContext()).setMessage("Loading...").build();
-            dialog.show();
-            compositeDisposable.add(iComicAPI.filterComics(genre_list.get(genre))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<List<Comic>>() {
-                        @Override
-                        public void accept(List<Comic> comics) throws Exception {
-                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFollowed));
-                            dialog.dismiss();
-                        }
-                    }));
-        }else {
-            AlertDialog dialog = new SpotsDialog.Builder().setContext(this.view.getContext()).setMessage("Loading...").build();
-            dialog.show();
-            compositeDisposable.add(iComicAPI.getSearchComic(query)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<List<Comic>>() {
-                        @Override
-                        public void accept(List<Comic> comics) throws Exception {
-                            recycler.setAdapter(new ComicAdapter3(view.getContext(), comics, MainActivity.isFollowed));
-                            dialog.dismiss();
-                        }
-                    }));
-        }
-    }
-
-    private void fetchStatus(){
-        String[] status = new String[]{"Tất cả", "Đang tiến hành", "Hoàn thành"};
-        ArrayAdapter statusArrayAdapter = new ArrayAdapter(view.getContext(), R.layout.spinner_item, status);
-        statusArrayAdapter.setDropDownViewResource(R.layout.dropdown_spinner_item);
-        spn_status.setAdapter(statusArrayAdapter);
+    private void filter(String genre){
+        AlertDialog dialog = new SpotsDialog.Builder().setContext(this.view.getContext()).setMessage("Loading...").build();
+        dialog.show();
+        compositeDisposable.add(iComicAPI.filterGenres(genre)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Consumer<List<Comic>>() {
+            @Override
+            public void accept(List<Comic> comicList) throws Exception {
+                recycler.setAdapter(new ComicAdapter3(view.getContext(), comicList, MainActivity.isFollowed));
+                dialog.dismiss();
+            }
+        }));
     }
 }

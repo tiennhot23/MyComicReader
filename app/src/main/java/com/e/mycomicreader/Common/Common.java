@@ -3,8 +3,12 @@ package com.e.mycomicreader.Common;
 import com.e.mycomicreader.Retrofit.IComicAPI;
 import com.e.mycomicreader.Retrofit.RetrofitClient;
 import com.e.mycomicreader.models.Comic;
+import com.e.mycomicreader.models.Genre;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 
 public class Common {
@@ -23,6 +27,8 @@ public class Common {
         });
         return temp;
     }
+
+    public static List<Genre> genres = new ArrayList<>();
 
 
 }

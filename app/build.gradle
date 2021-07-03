@@ -84,5 +84,6 @@ dependencies {
     implementation 'com.makeramen:roundedimageview:2.3.0'
 
     implementation 'com.bskim:maxheightscrollview:1.0.0@aar'
+    implementation "com.github.skydoves:expandablelayout:1.0.7"
 
 }

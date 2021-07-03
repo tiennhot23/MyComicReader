@@ -69,58 +69,50 @@
 
     </com.nex3z.flowlayout.FlowLayout>
 
-    <LinearLayout
-        android:id="@+id/linear"
+    <RelativeLayout
+        android:id="@+id/expanded_layout"
         android:layout_below="@+id/flow_layout"
-        android:weightSum="7"
         android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <androidx.cardview.widget.CardView
-            android:layout_weight="3"
-            android:layout_margin="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="20dp"
             app:cardCornerRadius="10dp"
-            android:layout_width="0dp"
-            android:layout_height="match_parent">
-            <Spinner
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:gravity="center"
+            android:id="@+id/card_genre"
+            android:layout_toStartOf="@+id/btn_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/black">
+            <TextView
+                android:layout_margin="5dp"
+                android:text="Thể loại"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/white"
                 android:background="@color/black"
-                android:id="@+id/spn_genre"
+                android:id="@+id/genres"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
-            </Spinner>
-        </androidx.cardview.widget.CardView>
-        <androidx.cardview.widget.CardView
-            android:layout_weight="3"
-            android:layout_margin="5dp"
-            app:cardCornerRadius="10dp"
-            android:layout_width="0dp"
-            android:layout_height="match_parent">
-            <Spinner
-                android:background="@color/black"
-                android:id="@+id/spn_status"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </Spinner>
+            </TextView>
         </androidx.cardview.widget.CardView>
         <ImageView
+            android:layout_alignParentEnd="true"
             android:id="@+id/btn_filter"
             android:layout_margin="5dp"
             android:src="@drawable/ic_filter"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_height="wrap_content">
 
         </ImageView>
-    </LinearLayout>
+    </RelativeLayout>
 
     <androidx.cardview.widget.CardView
         android:layout_marginHorizontal="50dp"
-        android:layout_below="@id/linear"
+        android:layout_below="@id/expanded_layout"
         android:id="@+id/line"
         app:cardCornerRadius="10dp"
         android:layout_width="match_parent"
