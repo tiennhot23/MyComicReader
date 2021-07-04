@@ -9,7 +9,7 @@ public class RetrofitClient {
     // khoi tao retrofit
     public static Retrofit getInstance(){
         if(retrofit == null){
-            retrofit = new Retrofit.Builder().baseUrl("http://192.168.0.104:3000/api/")
+            retrofit = new Retrofit.Builder().baseUrl("https://comicreaderapi.herokuapp.com/api/")
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
+    android:background="@color/transparent"
     tools:context=".views.MainActivity">
 
     <ss.com.bannerslider.Slider
@@ -40,7 +40,7 @@
                     android:text="MỚI CẬP NHẬT"
                     android:textStyle="bold"
                     android:textSize="20sp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_color"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content">
@@ -60,7 +60,7 @@
                         android:layout_gravity="center"
                         android:textStyle="bold"
                         android:textSize="10sp"
-                        android:textColor="@color/black"
+                        android:textColor="@color/text_color"
                         android:layout_weight="1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
@@ -96,31 +96,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/linear2"
-                android:weightSum="5"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:layout_alignParentStart="true"
                     android:id="@+id/txt_recommend"
                     android:text="ĐỀ XUẤT"
                     android:textStyle="bold"
                     android:textSize="20sp"
-                    android:textColor="@color/black"
-                    android:layout_weight="2"
-                    android:layout_width="0dp"
+                    android:textColor="@color/text_color"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
                 </TextView>
 
                 <LinearLayout
                     android:weightSum="3"
-                    android:layout_weight="3"
-                    android:layout_width="0dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_toEndOf="@+id/txt_recommend"
+                    android:layout_width="match_parent"
                     android:orientation="vertical"
-                    android:layout_height="match_parent">
+                    android:layout_alignBottom="@id/txt_recommend"
+                    android:layout_height="wrap_content">
                     <TextView
                         android:id="@+id/txt_more_recommend"
                         android:text="Xem thêm >>"
@@ -128,7 +128,7 @@
                         android:layout_gravity="center"
                         android:textStyle="bold"
                         android:textSize="10sp"
-                        android:textColor="@color/black"
+                        android:textColor="@color/text_color"
                         android:layout_weight="1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
@@ -146,7 +146,7 @@
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </RelativeLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_recommend"
                 android:orientation="horizontal"

@@ -91,7 +91,7 @@ public class ChapterActivity extends AppCompatActivity implements AsyncTaskRespo
         prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(position + 1 > chapter_list.size()){
+                if(position + 1 == chapter_list.size()){
                     return;
                 }
                 Intent intent = new Intent(ChapterActivity.this, ChapterActivity.class);

@@ -87,7 +87,7 @@ public class SearchFragment  extends Fragment {
                     textView.setText(historySearches.get(i).search_title);
                     textView.setPadding(30,10,30,10);
                     textView.setBackgroundResource(R.drawable.flowlayout_item);
-                    textView.setTextColor(getResources().getColor(R.color.black));
+                    textView.setTextColor(getResources().getColor(R.color.white));
 
                     textView.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -140,7 +140,7 @@ public class SearchFragment  extends Fragment {
     }
 
     private void showOptionsDialog(){
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(view.getContext());
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(view.getContext(), R.style.AlertDialogCustom);
         alertDialog.setTitle("Select Genres");
 
         View filter_layout = LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_option, null);

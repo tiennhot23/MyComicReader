@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/background_color">
+    android:background="@color/transparent">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardview"
@@ -30,14 +30,20 @@
             </ImageView>
 
             <EditText
-                android:maxLines="1"
-                android:layout_toStartOf="@id/btn_search"
-                android:layout_marginHorizontal="10dp"
+                android:hint="search comic"
+                android:textColorHint="@color/gray"
+                android:backgroundTint="@color/white"
+                android:textCursorDrawable="@null"
                 android:id="@+id/edit_text"
-                android:textColor="@color/white"
-                android:shadowColor="@color/gray"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_toStartOf="@id/btn_search"
+                android:maxLines="1"
+                android:shadowColor="@color/gray"
+                android:textColor="@color/white"
+                android:textColorHighlight="#FFFFFF"
+                android:textColorLink="#FFFFFF">
 
             </EditText>
         </RelativeLayout>
@@ -51,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/cardview"
         android:text="Lịch sử tìm kiếm"
-        android:textColor="@color/black"
+        android:textColor="@color/text_color"
         android:layout_marginHorizontal="10dp">
 
     </TextView>
@@ -110,21 +116,15 @@
         </ImageView>
     </RelativeLayout>
 
-    <androidx.cardview.widget.CardView
-        android:layout_marginHorizontal="50dp"
-        android:layout_below="@id/expanded_layout"
-        android:id="@+id/line"
-        app:cardCornerRadius="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <View
+    <View
             android:layout_width="match_parent"
-            android:layout_height="4dp"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="50dp"
+            android:layout_below="@id/expanded_layout"
+            android:id="@+id/line"
             android:background="@drawable/gradient_black_white">
 
-        </View>
-
-    </androidx.cardview.widget.CardView>
+    </View>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_margin="5dp"

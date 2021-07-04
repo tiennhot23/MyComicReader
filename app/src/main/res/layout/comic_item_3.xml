@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginVertical="5dp"
-    app:cardBackgroundColor="@color/white">
+    android:background="@color/transparent">
 
     <androidx.cardview.widget.CardView
         android:layout_marginLeft="15dp"
@@ -34,7 +34,7 @@
         app:cardCornerRadius="20dp"
         app:cardBackgroundColor="@color/black"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -49,7 +49,6 @@
             </ImageView>
             <LinearLayout
                 android:layout_toEndOf="@+id/thumb"
-                android:layout_toStartOf="@+id/thumb2"
                 android:id="@+id/linear"
                 android:orientation="vertical"
                 android:layout_width="200dp"
@@ -124,4 +123,4 @@
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
-</androidx.cardview.widget.CardView>
+</RelativeLayout>

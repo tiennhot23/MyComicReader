@@ -1,32 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
-    tools:context=".views.MainActivity"
-    android:orientation="vertical">
+    android:background="@color/black"
+    tools:context=".views.MainActivity">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager"
-        android:layout_weight="1"
+    <com.jgabrielfreitas.core.BlurImageView
+        android:id="@+id/background"
         android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/background" />
 
-    </androidx.viewpager2.widget.ViewPager2>
-
-    <com.etebarian.meowbottomnavigation.MeowBottomNavigation
-        android:id="@+id/bottom_navigation"
-        android:layout_gravity="bottom"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:mbn_circleColor="@color/black"
-        app:mbn_backgroundBottomColor="@color/black"
-        app:mbn_defaultIconColor="@color/white"
-        app:mbn_rippleColor="@color/white"
-        app:mbn_selectedIconColor="@color/white"
-        app:mbn_shadowColor="@color/gray"/>
+        android:layout_height="match_parent">
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
 
-</LinearLayout>
+        </androidx.viewpager2.widget.ViewPager2>
+
+        <com.etebarian.meowbottomnavigation.MeowBottomNavigation
+            android:id="@+id/bottom_navigation"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mbn_circleColor="#605F5F"
+            app:mbn_backgroundBottomColor="#605F5F"
+            app:mbn_defaultIconColor="@color/white"
+            app:mbn_rippleColor="@color/black"
+            app:mbn_selectedIconColor="@color/white"
+            app:mbn_shadowColor="@color/gray"/>
+    </LinearLayout>
+
+</RelativeLayout>

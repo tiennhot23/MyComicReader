@@ -10,7 +10,7 @@
     <color name="yellow">#FFEB3B</color>
     <color name="gray">#353535</color>
 
-    <color name="text_color">#e42573</color>
+    <color name="text_color">#ffffff</color>
     <color name="background_color">#ffffff</color>
-    <color name="card_view_color">#231539</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>

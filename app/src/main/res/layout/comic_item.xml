@@ -4,9 +4,11 @@
     android:layout_height="170dp"
     android:layout_margin="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/transparent">
 
     <LinearLayout
+        android:background="@color/transparent"
         android:layout_marginTop="10dp"
         android:layout_marginStart="15dp"
         android:layout_width="match_parent"
@@ -16,12 +18,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:cardBackgroundColor="@color/gray">
+            <ImageView
+                android:src="@drawable/gradient_black_white"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </ImageView>
+            <ImageView
+                android:alpha=".5"
+                android:src="@drawable/gradient_imageview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </ImageView>
 
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 
     <LinearLayout
+        android:background="@color/transparent"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <androidx.cardview.widget.CardView
@@ -33,11 +49,7 @@
             app:cardCornerRadius="20dp"
             app:cardBackgroundColor="@color/black"
             android:divider="@android:color/transparent"
-            android:dividerHeight="0.0px"
-            android:clipToPadding="false"
-            android:clipChildren="false"
-            app:cardElevation="10dp"
-            app:cardPreventCornerOverlap="false">
+            android:background="@color/transparent">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -119,11 +131,13 @@
     </LinearLayout>
 
     <LinearLayout
+        android:background="@color/transparent"
         android:weightSum="8"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
+            android:background="@color/transparent"
             android:layout_weight="6"
             android:layout_width="0dp"
             android:layout_height="match_parent">

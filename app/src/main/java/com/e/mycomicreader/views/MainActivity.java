@@ -32,6 +32,7 @@ import com.e.mycomicreader.fragments.SearchFragment;
 import com.e.mycomicreader.models.Comic;
 import com.e.mycomicreader.models.FollowedComicViewModel;
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
+import com.jgabrielfreitas.core.BlurImageView;
 import dmax.dialog.SpotsDialog;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -47,6 +48,7 @@ public class MainActivity extends FragmentActivity {
     private ViewPager2 viewPager;
     private MainViewPagerAdapter mainViewPagerAdapter;
     private MeowBottomNavigation bottomNavigation;
+    private BlurImageView background;
 
     public static boolean isNetworkAvailable;
     public static boolean isWritePermission;
@@ -69,7 +71,10 @@ public class MainActivity extends FragmentActivity {
         }
         checkWriteExternalStorage();
 
-//        startSplashScreen();
+        startSplashScreen();
+
+        background = findViewById(R.id.background);
+        background.setBlur(2);
 
 
         followedComicViewModel = new ViewModelProvider(this).get(FollowedComicViewModel.class);

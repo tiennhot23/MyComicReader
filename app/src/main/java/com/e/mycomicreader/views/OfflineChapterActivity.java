@@ -56,7 +56,7 @@ public class OfflineChapterActivity extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(position + 1 > files.size()){
+                if(position + 1 == files.size()){
                     return;
                 }
                 Intent intent = new Intent(OfflineChapterActivity.this, OfflineChapterActivity.class);
