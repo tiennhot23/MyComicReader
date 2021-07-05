@@ -98,6 +98,7 @@ public class DetailComicAdapter extends RecyclerView.Adapter<DetailComicAdapter.
                         Intent intent = new Intent(context, ChapterActivity.class);
                         intent.putExtra("position", getBindingAdapterPosition());
                         intent.putExtra("chapter_list", (Serializable) chapter_list);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
                     }
                 }

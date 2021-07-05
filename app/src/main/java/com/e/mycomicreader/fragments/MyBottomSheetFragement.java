@@ -100,6 +100,7 @@ public class MyBottomSheetFragement extends BottomSheetDialogFragment implements
                     genre = String.valueOf(stringBuilder).substring(2);
                     intent.putExtra("genre", genre);
                     intent.putExtra("desc", detailComic.desc);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
             }
