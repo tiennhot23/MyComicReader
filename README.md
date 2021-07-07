@@ -1,1 +1,2 @@
-"# MyComicReader"
+# MyComicReader
+Online and offline
