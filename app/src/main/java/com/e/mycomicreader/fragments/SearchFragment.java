@@ -109,14 +109,15 @@ public class SearchFragment  extends Fragment {
             new Handler().post(() -> {
                 fetchGenres();
             });
+            MainActivity.followedComicViewModel.getAll().observe((LifecycleOwner) view.getContext(), new Observer<List<FollowedComic>>() {
+                @Override
+                public void onChanged(List<FollowedComic> followedComics) {
+                    recycler.getAdapter().notifyDataSetChanged();
+                }
+            });
         }
 
-        MainActivity.followedComicViewModel.getAll().observe((LifecycleOwner) view.getContext(), new Observer<List<FollowedComic>>() {
-            @Override
-            public void onChanged(List<FollowedComic> followedComics) {
-                recycler.getAdapter().notifyDataSetChanged();
-            }
-        });
+
 
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override

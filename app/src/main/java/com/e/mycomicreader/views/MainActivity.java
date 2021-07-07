@@ -84,6 +84,8 @@ public class MainActivity extends FragmentActivity {
         isNetworkAvailable = isNetworkAvailable();
         if(isNetworkAvailable){
             fetchComic();
+        }else{
+            UI();
         }
 
 

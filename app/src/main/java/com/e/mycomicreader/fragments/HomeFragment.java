@@ -48,14 +48,15 @@ public class HomeFragment extends Fragment {
         if (MainActivity.isNetworkAvailable) {
             fetchLastUpdated();
             fetchRecommend();
+            MainActivity.followedComicViewModel.getAll().observe((LifecycleOwner) view.getContext(), new Observer<List<FollowedComic>>() {
+                @Override
+                public void onChanged(List<FollowedComic> followedComics) {
+                    recyclerLastUpdated.getAdapter().notifyDataSetChanged();
+                    recyclerRecommend.getAdapter().notifyDataSetChanged();
+                }
+            });
         }
-        MainActivity.followedComicViewModel.getAll().observe((LifecycleOwner) view.getContext(), new Observer<List<FollowedComic>>() {
-            @Override
-            public void onChanged(List<FollowedComic> followedComics) {
-                recyclerLastUpdated.getAdapter().notifyDataSetChanged();
-                recyclerRecommend.getAdapter().notifyDataSetChanged();
-            }
-        });
+
 
 
         return view;
